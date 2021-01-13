@@ -1,20 +1,12 @@
 import React from "react";
 import { Text } from "@adobe/react-spectrum";
-import { Log } from "../utils/database";
+import { Log, useMeal } from "../utils/database";
 
 export default function LogItem({ children }: { children: Log }) {
-  // switch (children.type) {
-  //   case "combination":
+  const meal = useMeal(children.mealId);
   return (
     <Text>
-      {children.portion} {children.name}
+      {children.portion} {meal.name}
     </Text>
   );
-  //   case "raw":
-  //     return (
-  //       <Text>
-  //         {children.weight}g {children.name}
-  //       </Text>
-  //     );
-  // }
 }

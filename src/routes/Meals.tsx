@@ -21,7 +21,7 @@ export default function Meals() {
     <>
       <List items={meals}>
         {(meal) => (
-          <DialogTrigger type="tray" isDismissable key={meal._id}>
+          <DialogTrigger type="tray" isDismissable key={meal.id}>
             <ActionButton isQuiet>
               <Text>{meal.name}</Text>
               <Text>{meal.value} kcal</Text>
@@ -35,9 +35,8 @@ export default function Meals() {
                     onSubmit={(event: FormEvent<HTMLFormElement>) => {
                       event.preventDefault();
                       const { mealname, calories } = event.currentTarget;
-                      editMeal(meal, mealname.value, calories.value).then(
-                        close
-                      );
+                      editMeal(meal.id, mealname.value, calories.value);
+                      close();
                     }}
                   >
                     <TextField
@@ -45,6 +44,7 @@ export default function Meals() {
                       label="Name"
                       defaultValue={meal.name}
                       isRequired
+                      autoFocus
                     />
                     <TextField
                       inputMode="numeric"
@@ -56,7 +56,13 @@ export default function Meals() {
                     <Button variant="cta" type="submit">
                       Save
                     </Button>
-                    <Button variant="negative" onPress={() => deleteMeal(meal)}>
+                    <Button
+                      variant="negative"
+                      onPress={() => {
+                        deleteMeal(meal.id);
+                        close();
+                      }}
+                    >
                       Delete
                     </Button>
                   </Form>
@@ -77,10 +83,11 @@ export default function Meals() {
                 onSubmit={(event: FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
                   const { mealname, calories } = event.currentTarget;
-                  addMeal(mealname.value, calories.value).then(close);
+                  addMeal(mealname.value, calories.value);
+                  close();
                 }}
               >
-                <TextField name="mealname" label="Name" isRequired />
+                <TextField name="mealname" label="Name" isRequired autoFocus />
                 <TextField
                   inputMode="numeric"
                   name="calories"

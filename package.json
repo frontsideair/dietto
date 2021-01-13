@@ -14,13 +14,15 @@
     "@spectrum-icons/workflow": "^3.1.0",
     "date-fns": "^2.16.1",
     "history": "^5.0.0",
+    "immer": "^8.0.0",
     "pouchdb-browser": "^7.2.2",
     "ramda": "^0.27.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-pouchdb": "^2.1.0",
     "react-router-dom": "^6.0.0-beta.0",
-    "use-pouchdb": "^1.2.1"
+    "use-pouchdb": "^1.2.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
@@ -32,6 +34,7 @@
     "@types/ramda": "^0.27.19",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
+    "@types/uuid": "^8.3.0",
     "react-scripts": "^3.4.3",
     "typescript": "^4.0.3"
   },

@@ -1,9 +1,9 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import Home from "./Home";
+import Today from "./Today";
 
 test("renders correctly", () => {
-  const { getByText } = render(<Home />);
+  const { getByText } = render(<Today />);
   const element = getByText(/what did you eat/i);
   expect(element).toBeInTheDocument();
 });

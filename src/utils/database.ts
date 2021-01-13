@@ -1,7 +1,7 @@
-import { endOfDay, startOfDay } from "date-fns";
-// import { sum, map } from "ramda";
-
-import { useDB, useFind, useGet } from "react-pouchdb/browser";
+import { isSameDay } from "date-fns";
+import { useState } from "react";
+import produce from "immer";
+import { v4 as uuid } from "uuid";
 
 // ingredient = calories per unit (like flour, oil etc)
 // meal = ready or combination
@@ -10,105 +10,109 @@ import { useDB, useFind, useGet } from "react-pouchdb/browser";
 // log = meal with portion with timestamp
 
 // type T = [number, (limit: number) => void];
-export function useLimit() {
-  const LIMIT_ID = "limit";
-  const doc = useGet<{ value: number }>({ id: LIMIT_ID });
-  const db = useDB();
-  function setLimit(value: number) {
-    db.put({ _id: LIMIT_ID, _rev: doc?._rev, value });
+function useLocalStorage<T>(
+  key: string,
+  defaultValue: T,
+  from: (_: string) => T,
+  to: (_: T) => string
+) {
+  const [state, setState] = useState<T>(() => {
+    const value = window.localStorage.getItem(key);
+    return value ? from(value) : defaultValue;
+  });
+  function set(value: T | ((_: T) => T)) {
+    const valueToStore = value instanceof Function ? value(state) : value;
+    setState(valueToStore);
+    window.localStorage.setItem(key, to(valueToStore));
   }
-  return [doc?.value ?? 1000, setLimit] as const;
+  return [state, set] as const;
+}
+
+export function useLimit() {
+  return useLocalStorage("limit", 1000, parseInt, String);
 }
 
 export function useLogs(date: Date) {
-  const logs = useFind<Log>({
-    selector: {
-      type: "log",
-      timestamp: { $gte: startOfDay(date), $lt: endOfDay(date) },
-    },
-  });
-  const db = useDB();
+  const [logs, setLogs] = useLocalStorage<Log[]>(
+    "logs",
+    [],
+    JSON.parse,
+    JSON.stringify
+  );
   function addLog(meal: string, portion: number) {
-    return db.post({
-      type: "log",
-      name: meal,
-      portion,
-      timestamp: new Date(),
-    });
+    setLogs(
+      produce((draft: Log[]) => {
+        draft.push({
+          mealId: meal,
+          portion,
+          timestamp: new Date().toISOString(),
+        });
+      })
+    );
   }
-  function editLog(
-    log: PouchDB.Core.RemoveDocument,
-    meal: string,
-    portion: number
-  ) {
-    return db.put({ ...log, name: meal, portion });
+  function editLog(log: Log, mealId: string, portion: number) {
+    setLogs(
+      produce((draft: Log[]) => {
+        const maybeLog = draft.find((v) => v.timestamp === log.timestamp);
+        if (maybeLog) {
+          maybeLog.mealId = mealId;
+          maybeLog.portion = portion;
+        }
+      })
+    );
   }
-  function deleteLog(log: PouchDB.Core.RemoveDocument) {
-    return db.remove(log);
+  function deleteLog(log: Log) {
+    setLogs((logs) => logs.filter((v: Log) => v.timestamp !== log.timestamp));
   }
-  return [logs, addLog, editLog, deleteLog] as const;
+  const dayLogs = logs.filter((log) =>
+    isSameDay(new Date(log.timestamp), date)
+  );
+  return [dayLogs, addLog, editLog, deleteLog] as const;
+}
+
+export function findMeal(mealId: string, meals: Meal[]) {
+  const maybeMeal = meals.find((meal) => (meal.id = mealId));
+  if (maybeMeal) {
+    return maybeMeal;
+  } else {
+    throw new Error(`Meal ${mealId} not found!`);
+  }
+}
+
+export function useMeal(mealId: string) {
+  const [meals] = useMeals();
+  return findMeal(mealId, meals);
 }
 
 export function useMeals() {
-  const meals = useFind<Meal>({
-    selector: {
-      type: "meal",
-    },
-  });
-  const db = useDB();
+  const [meals, setMeals] = useLocalStorage<Meal[]>(
+    "meals",
+    [],
+    JSON.parse,
+    JSON.stringify
+  );
   function addMeal(name: string, calories: number) {
-    return db.post({
-      type: "meal",
-      name,
-      value: calories,
-    });
+    setMeals(
+      produce((draft) => {
+        draft.push({ id: uuid(), name, value: calories });
+      })
+    );
   }
-  function editMeal(
-    meal: PouchDB.Core.RemoveDocument,
-    name: string,
-    calories: number
-  ) {
-    return db.put({
-      ...meal,
-      name,
-      value: calories,
-    });
+  function editMeal(id: string, name: string, calories: number) {
+    setMeals(
+      produce((draft: Meal[]) => {
+        const maybeMeal = draft.find((meal: Meal) => meal.id === id);
+        if (maybeMeal) {
+          maybeMeal.name = name;
+          maybeMeal.value = calories;
+        }
+      })
+    );
   }
-  function deleteMeal(meal: PouchDB.Core.RemoveDocument) {
-    return db.remove(meal);
+  function deleteMeal(id: string) {
+    setMeals((meals) => meals.filter((meal: Meal) => meal.id !== id));
   }
   return [meals, addMeal, editMeal, deleteMeal] as const;
-}
-
-export function useIngredients() {
-  const meals = useFind<IngredientType>({
-    selector: {
-      type: "ingredient",
-    },
-  });
-  const db = useDB();
-  function addIngredient(name: string, calories: number) {
-    return db.post({
-      type: "ingredient",
-      name,
-      calories,
-    });
-  }
-  function editIngredient(
-    ingredient: PouchDB.Core.RemoveDocument,
-    name: string,
-    calories: number
-  ) {
-    return db.put({
-      ...ingredient,
-      name,
-      calories,
-    });
-  }
-  function deleteIngredient(ingredient: PouchDB.Core.RemoveDocument) {
-    return db.remove(ingredient);
-  }
-  return [meals, addIngredient, editIngredient, deleteIngredient] as const;
 }
 
 type Calories = number;
@@ -131,10 +135,10 @@ type Ingredient = Raw | Combination;
 
 export type IngredientType = { name: string; calories: Calories };
 
-export type Meal = { name: string; value: Calories };
+export type Meal = { id: string; name: string; value: Calories };
 
 export type Log = {
-  name: string;
+  mealId: string;
   portion: number;
   timestamp: string;
 };
