@@ -1,15 +1,8 @@
-import { isSameDay } from "date-fns";
+import { formatISO, isSameDay, parseISO } from "date-fns";
 import { useState } from "react";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
 
-// ingredient = calories per unit (like flour, oil etc)
-// meal = ready or combination
-// ready = calories per unit (pieces?)
-// combination = list of ingredients with quantity
-// log = meal with portion with timestamp
-
-// type T = [number, (limit: number) => void];
 function useLocalStorage<T>(
   key: string,
   defaultValue: T,
@@ -45,7 +38,7 @@ export function useLogs(date: Date) {
         draft.push({
           mealId: meal,
           portion,
-          timestamp: new Date().toISOString(),
+          timestamp: formatISO(new Date()),
         });
       })
     );
@@ -65,7 +58,7 @@ export function useLogs(date: Date) {
     setLogs((logs) => logs.filter((v: Log) => v.timestamp !== log.timestamp));
   }
   const dayLogs = logs.filter((log) =>
-    isSameDay(new Date(log.timestamp), date)
+    isSameDay(parseISO(log.timestamp), date)
   );
   return [dayLogs, addLog, editLog, deleteLog] as const;
 }
@@ -116,22 +109,6 @@ export function useMeals() {
 }
 
 type Calories = number;
-
-type Grams = number;
-
-type Raw = {
-  type: "raw";
-  name: string;
-  weight: Grams;
-};
-
-type Combination = {
-  type: "combination";
-  name: string;
-  portion: number;
-};
-
-type Ingredient = Raw | Combination;
 
 export type IngredientType = { name: string; calories: Calories };
 

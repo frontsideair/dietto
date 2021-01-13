@@ -5,7 +5,7 @@ import {
   defaultTheme,
   Flex,
 } from "@adobe/react-spectrum";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 import Tabs from "./components/Tabs";
@@ -17,7 +17,7 @@ import Settings from "./routes/Settings";
 
 ReactDOM.render(
   <SpectrumProvider theme={defaultTheme}>
-    <BrowserRouter>
+    <Router>
       <Flex direction="column" height="100vh" width="100vw">
         <Routes>
           <Route path="/">
@@ -35,7 +35,7 @@ ReactDOM.render(
         </Routes>
         <Tabs />
       </Flex>
-    </BrowserRouter>
+    </Router>
   </SpectrumProvider>,
   document.getElementById("root")
 );
