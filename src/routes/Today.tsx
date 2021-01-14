@@ -123,40 +123,18 @@ export default function Today() {
             </ActionButton>
             {(close) => (
               <Dialog>
-                <Heading>Edit log</Heading>
+                <Heading>Delete log</Heading>
                 <Divider />
                 <Content>
-                  <Form
-                    onSubmit={(event: FormEvent<HTMLFormElement>) => {
-                      event.preventDefault();
-                      const { meal, portion } = event.currentTarget;
-                      editLog(log, meal.value, portion.value);
+                  <Button
+                    variant="negative"
+                    onPress={() => {
+                      deleteLog(log);
                       close();
                     }}
                   >
-                    <MealPicker defaultSelectedKey={log.mealId}>
-                      {(meal) => <Item key={meal.id}>{meal.name}</Item>}
-                    </MealPicker>
-                    <TextField
-                      inputMode="numeric"
-                      name="portion"
-                      label="Portion"
-                      isRequired
-                      defaultValue={String(log.portion)}
-                    />
-                    <Button variant="cta" type="submit">
-                      Save
-                    </Button>
-                    <Button
-                      variant="negative"
-                      onPress={() => {
-                        deleteLog(log);
-                        close();
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </Form>
+                    Delete
+                  </Button>
                 </Content>
               </Dialog>
             )}
