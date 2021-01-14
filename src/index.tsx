@@ -1,41 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  Provider as SpectrumProvider,
-  defaultTheme,
-  Flex,
-} from "@adobe/react-spectrum";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider, defaultTheme, Flex } from "@adobe/react-spectrum";
+import { Tabs, Item } from "@react-spectrum/tabs";
 
 import "./index.css";
-import Tabs from "./components/Tabs";
 
-import Home from "./routes/Home";
+import Week from "./routes/Week";
 import Today from "./routes/Today";
 import Meals from "./routes/Meals";
 import Settings from "./routes/Settings";
 
 ReactDOM.render(
-  <SpectrumProvider theme={defaultTheme}>
-    <Router>
-      <Flex direction="column" height="100vh" width="100vw">
-        <Routes>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/today">
-            <Today />
-          </Route>
-          <Route path="meals">
-            <Meals />
-          </Route>
-          <Route path="settings">
-            <Settings />
-          </Route>
-        </Routes>
-        <Tabs />
-      </Flex>
-    </Router>
-  </SpectrumProvider>,
+  <Provider theme={defaultTheme}>
+    <Flex direction="column" minHeight="100vh" width="100vw">
+      <Tabs aria-label="Diet App">
+        <Item title="Today" key="today">
+          <Today />
+        </Item>
+        <Item title="Meals" key="meals">
+          <Meals />
+        </Item>
+        <Item title="Week" key="week">
+          <Week />
+        </Item>
+        <Item title="Settings" key="settings">
+          <Settings />
+        </Item>
+      </Tabs>
+    </Flex>
+  </Provider>,
   document.getElementById("root")
 );

@@ -2,6 +2,7 @@ import { formatISO, isSameDay, parseISO } from "date-fns";
 import { useState } from "react";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
+import { map, sum } from "ramda";
 
 function useLocalStorage<T>(
   key: string,
@@ -25,7 +26,11 @@ export function useLimit() {
   return useLocalStorage("limit", 1000, parseInt, String);
 }
 
-export function useLogs(date: Date) {
+export function getDayLogs(logs: Log[], date: Date) {
+  return logs.filter((log) => isSameDay(parseISO(log.timestamp), date));
+}
+
+export function useLogs() {
   const [logs, setLogs] = useLocalStorage<Log[]>(
     "logs",
     [],
@@ -57,10 +62,7 @@ export function useLogs(date: Date) {
   function deleteLog(log: Log) {
     setLogs((logs) => logs.filter((v: Log) => v.timestamp !== log.timestamp));
   }
-  const dayLogs = logs.filter((log) =>
-    isSameDay(parseISO(log.timestamp), date)
-  );
-  return [dayLogs, addLog, editLog, deleteLog] as const;
+  return [logs, addLog, editLog, deleteLog] as const;
 }
 
 export function findMeal(mealId: string, meals: Meal[]) {
@@ -70,6 +72,12 @@ export function findMeal(mealId: string, meals: Meal[]) {
   } else {
     throw new Error(`Meal ${mealId} not found!`);
   }
+}
+
+export function calculateCalories(logs: Log[], meals: Meal[]) {
+  return sum(
+    map((log) => findMeal(log.mealId, meals).value * log.portion, logs)
+  );
 }
 
 export function useMeal(mealId: string) {
