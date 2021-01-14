@@ -37,32 +37,23 @@ export function useLogs() {
     JSON.parse,
     JSON.stringify
   );
-  function addLog(meal: string, portion: number) {
+  const [meals] = useMeals();
+  function addLog(mealId: string, portion: number) {
+    const { name, calories } = findMeal(mealId, meals);
     setLogs(
       produce((draft: Log[]) => {
         draft.push({
-          mealId: meal,
+          meal: { name, calories },
           portion,
           timestamp: formatISO(new Date()),
         });
       })
     );
   }
-  function editLog(log: Log, mealId: string, portion: number) {
-    setLogs(
-      produce((draft: Log[]) => {
-        const maybeLog = draft.find((v) => v.timestamp === log.timestamp);
-        if (maybeLog) {
-          maybeLog.mealId = mealId;
-          maybeLog.portion = portion;
-        }
-      })
-    );
-  }
   function deleteLog(log: Log) {
     setLogs((logs) => logs.filter((v: Log) => v.timestamp !== log.timestamp));
   }
-  return [logs, addLog, editLog, deleteLog] as const;
+  return [logs, addLog, deleteLog] as const;
 }
 
 export function findMeal(mealId: string, meals: Meal[]) {
@@ -75,9 +66,7 @@ export function findMeal(mealId: string, meals: Meal[]) {
 }
 
 export function calculateCalories(logs: Log[], meals: Meal[]) {
-  return sum(
-    map((log) => findMeal(log.mealId, meals).value * log.portion, logs)
-  );
+  return sum(map((log) => log.meal.calories * log.portion, logs));
 }
 
 export function useMeal(mealId: string) {
@@ -95,7 +84,7 @@ export function useMeals() {
   function addMeal(name: string, calories: number) {
     setMeals(
       produce((draft) => {
-        draft.push({ id: uuid(), name, value: calories });
+        draft.push({ id: uuid(), name, calories });
       })
     );
   }
@@ -105,7 +94,7 @@ export function useMeals() {
         const maybeMeal = draft.find((meal: Meal) => meal.id === id);
         if (maybeMeal) {
           maybeMeal.name = name;
-          maybeMeal.value = calories;
+          maybeMeal.calories = calories;
         }
       })
     );
@@ -118,107 +107,13 @@ export function useMeals() {
 
 type Calories = number;
 
-export type IngredientType = { name: string; calories: Calories };
-
-export type Meal = { id: string; name: string; value: Calories };
+export type Meal = { id: string; name: string; calories: Calories };
 
 export type Log = {
-  mealId: string;
+  meal: {
+    name: string;
+    calories: Calories;
+  };
   portion: number;
   timestamp: string;
 };
-
-// export function raw(name: string, weight: Grams): Log {
-//   const timestamp = new Date().toISOString();
-//   return { timestamp, name, type: "raw", weight };
-// }
-
-// export function combination(name: string, portion: number): Log {
-//   const timestamp = new Date().toISOString();
-//   return { timestamp, name, type: "combination", portion };
-// }
-
-// type Database = {
-//   limit: Calories;
-//   logs: Record<string, Log[]>;
-//   meals: Record<string, Meal>;
-//   ingredients: Record<string, Calories>;
-// };
-
-// const database: Database = {
-//   limit: 750,
-//   logs: {
-//     "2020-09-20": [
-//       // yumurtali yagli ekmek = 1 dilim ekmek + 3g tereyag + 1/2 yumurta sarisi
-//       // kahvalti = 1 dilim ekmek + 30g peynir + 4 zeytin + 1 yumurta beyazi + 1/2 yumurta sarisi
-//       // manti = 100g manti + 150g yogurt + 20g salca
-//       // hamburger = 1 hamburger ekmek + 50g kiyma + 10g domates + 10g sogan
-//       // piko = 18g piko (482 / 100 * 18)
-//       // seftali = 1 seftali
-//       // daba daba = 1 daba daba (410kcal)
-//       {
-//         timestamp: "2020-09-19T13:43:33.207Z",
-//         type: "combination",
-//         name: "yumurtali yagli ekmek",
-//         portion: 1,
-//       },
-//       {
-//         timestamp: "2020-09-19T16:43:33.207Z",
-//         type: "raw",
-//         name: "ekmek",
-//         weight: 100,
-//       },
-//       {
-//         timestamp: "2020-09-19T19:43:33.207Z",
-//         type: "combination",
-//         name: "piko",
-//         portion: 1,
-//       },
-//     ],
-//   },
-//   meals: {
-//     "yagli ekmek": [
-//       { type: "raw", name: "yag", weight: 3 },
-//       { type: "combination", name: "dilim ekmek", portion: 1 },
-//     ],
-//     "yumurtali yagli ekmek": [
-//       { type: "combination", name: "yagli ekmek", portion: 1 },
-//       { type: "combination", name: "yumurta sarisi", portion: 1 / 2 },
-//     ],
-//     "dilim ekmek": [{ type: "raw", name: "ekmek", weight: 50 }],
-//     "piko": [{ type: "raw", name: "piko", weight: 18 }],
-//     "daba daba": 409.17,
-//     "yumurta sarisi": 55,
-//   },
-//   ingredients: {
-//     yag: 700,
-//     ekmek: 100,
-//     piko: 482,
-//     karpuz: 30,
-//   },
-// };
-
-// export function calories(
-//   eaten: Ingredient[],
-//   meals: Record<string, Meal>,
-//   ingredients: Record<string, Calories>
-// ): Calories {
-//   function mealCalories(meal: Meal): Calories {
-//     if (typeof meal === "number") {
-//       return meal;
-//     } else {
-//       return sum(map(ingredientCalories)(meal));
-//     }
-//   }
-
-//   function ingredientCalories(ingredient: Ingredient): Calories {
-//     switch (ingredient.type) {
-//       case "raw":
-//         return (ingredients[ingredient.name] * ingredient.weight) / 100;
-//       case "combination":
-//         return mealCalories(meals[ingredient.name]);
-//     }
-//   }
-
-//   return sum(map(ingredientCalories)(eaten));
-// }

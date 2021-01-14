@@ -50,7 +50,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY }: any) {
 export default function Today() {
   const [date, setDate] = useState(startOfToday());
   const [limit] = useLimit();
-  const [logs, addLog, editLog, deleteLog] = useLogs();
+  const [logs, addLog, deleteLog] = useLogs();
   const dayLogs = getDayLogs(logs, date);
   const [meals] = useMeals();
   const calories = calculateCalories(dayLogs, meals);

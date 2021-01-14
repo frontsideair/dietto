@@ -52,10 +52,10 @@ export default function Meals() {
       </DialogTrigger>
       <List items={meals}>
         {(meal) => (
-          <DialogTrigger type="tray" isDismissable key={meal.id}>
+          <DialogTrigger type="tray" isDismissable key={meal.name}>
             <ActionButton isQuiet>
               <Text>{meal.name}</Text>
-              <Text>{meal.value} kcal</Text>
+              <Text>{meal.calories} kcal</Text>
             </ActionButton>
             {(close) => (
               <Dialog>
@@ -81,7 +81,7 @@ export default function Meals() {
                       inputMode="numeric"
                       name="calories"
                       label="Calories"
-                      defaultValue={String(meal.value)}
+                      defaultValue={String(meal.calories)}
                       isRequired
                     />
                     <Button variant="cta" type="submit">
