@@ -25,6 +25,7 @@ export default function Settings() {
         >
           <TextField
             name="limit"
+            inputMode="numeric"
             label="Targeted daily calorie intake"
             defaultValue={String(limit)}
           />

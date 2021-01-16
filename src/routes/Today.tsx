@@ -77,7 +77,7 @@ export default function Today() {
           layers={["slices", CenteredMetric]}
         />
       </Flex>
-      <DialogTrigger type="tray" isDismissable>
+      <DialogTrigger type="tray">
         <ActionButton>Add</ActionButton>
         {(close) => (
           <Dialog>
