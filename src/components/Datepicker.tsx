@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Button, View } from "@adobe/react-spectrum";
+import { Flex, Button, Text } from "@adobe/react-spectrum";
 import ChevronLeft from "@spectrum-icons/workflow/ChevronLeft";
 import ChevronRight from "@spectrum-icons/workflow/ChevronRight";
 import { addDays, isSameDay, startOfToday, subDays } from "date-fns";
@@ -19,7 +19,9 @@ export default function Datepicker({ date, setDate }: Props) {
       >
         <ChevronLeft />
       </Button>
-      <View flexGrow={1}>{formatDate(date)}</View>
+      <Flex alignItems="center" justifyContent="center" flexGrow={1}>
+        <Text>{formatDate(date)}</Text>
+      </Flex>
       <Button
         variant="secondary"
         isDisabled={isSameDay(date, startOfToday())}
