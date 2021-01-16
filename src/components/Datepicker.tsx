@@ -3,7 +3,7 @@ import { Flex, Button, View } from "@adobe/react-spectrum";
 import ChevronLeft from "@spectrum-icons/workflow/ChevronLeft";
 import ChevronRight from "@spectrum-icons/workflow/ChevronRight";
 import { addDays, isSameDay, startOfToday, subDays } from "date-fns";
-import formatDay from "../utils/formatDay";
+import { formatDate } from "../utils/model";
 
 type Props = {
   date: Date;
@@ -19,7 +19,7 @@ export default function Datepicker({ date, setDate }: Props) {
       >
         <ChevronLeft />
       </Button>
-      <View flexGrow={1}>{formatDay(date)}</View>
+      <View flexGrow={1}>{formatDate(date)}</View>
       <Button
         variant="secondary"
         isDisabled={isSameDay(date, startOfToday())}

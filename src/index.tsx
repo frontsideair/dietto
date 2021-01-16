@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider, defaultTheme, Flex } from "@adobe/react-spectrum";
 import { Tabs, Item } from "@react-spectrum/tabs";
+import { enableMapSet } from "immer";
 
 import "./index.css";
 
@@ -10,9 +11,11 @@ import Today from "./routes/Today";
 import Meals from "./routes/Meals";
 import Settings from "./routes/Settings";
 
+enableMapSet();
+
 ReactDOM.render(
-  <Provider theme={defaultTheme}>
-    <Flex direction="column" minHeight="100vh" width="100vw">
+  <Provider theme={defaultTheme} marginX="auto">
+    <Flex direction="column" minHeight="100vh" maxWidth="56.25vh">
       <Tabs aria-label="Diet App">
         <Item title="Today" key="today">
           <Today />

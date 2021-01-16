@@ -1,5 +1,4 @@
-import React, { FormEvent, Key, useState } from "react";
-import { startOfToday } from "date-fns";
+import React, { FormEvent, useState } from "react";
 import {
   Item,
   Form,
@@ -16,17 +15,11 @@ import {
 } from "@adobe/react-spectrum";
 import { ResponsivePie } from "@nivo/pie";
 
-import {
-  calculateCalories,
-  getDayLogs,
-  Meal,
-  useLimit,
-  useLogs,
-  useMeals,
-} from "../utils/database";
+import { useDayLogs, useLimit, useMeals } from "../utils/database";
 import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
+import { calculateCalories, formatDateTime, Meal } from "../utils/model";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -48,12 +41,10 @@ function CenteredMetric({ dataWithArc, centerX, centerY }: any) {
 }
 
 export default function Today() {
-  const [date, setDate] = useState(startOfToday());
+  const [date, setDate] = useState(new Date());
   const [limit] = useLimit();
-  const [logs, addLog, deleteLog] = useLogs();
-  const dayLogs = getDayLogs(logs, date);
-  const [meals] = useMeals();
-  const calories = calculateCalories(dayLogs, meals);
+  const [dayLogs, addDayLog, deleteDayLog] = useDayLogs(date);
+  const calories = calculateCalories([...dayLogs.values()]);
   const caloriesData = calories % limit;
   return (
     <Flex direction="column" flexGrow={1}>
@@ -94,7 +85,11 @@ export default function Today() {
                 onSubmit={(event: FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
                   const { meal, portion } = event.currentTarget;
-                  addLog(meal.value, portion.value);
+                  addDayLog(
+                    meal.value,
+                    portion.value,
+                    formatDateTime(new Date())
+                  );
                   close();
                 }}
               >
@@ -115,7 +110,7 @@ export default function Today() {
           </Dialog>
         )}
       </DialogTrigger>
-      <List items={dayLogs}>
+      <List items={[...dayLogs.values()]}>
         {(log) => (
           <DialogTrigger type="tray" isDismissable key={log.timestamp}>
             <ActionButton isQuiet>
@@ -129,7 +124,7 @@ export default function Today() {
                   <Button
                     variant="negative"
                     onPress={() => {
-                      deleteLog(log);
+                      deleteDayLog(log);
                       close();
                     }}
                   >
@@ -145,22 +140,10 @@ export default function Today() {
   );
 }
 
-function MealPicker({
-  defaultSelectedKey,
-  children,
-}: {
-  defaultSelectedKey?: Key;
-  children: (meal: Meal) => any;
-}) {
+function MealPicker({ children }: { children: (meal: Meal) => any }) {
   const [meals] = useMeals();
   return (
-    <Picker
-      name="meal"
-      label="Meal"
-      items={meals}
-      isRequired
-      defaultSelectedKey={defaultSelectedKey}
-    >
+    <Picker name="meal" label="Meal" items={[...meals.values()]} isRequired>
       {children}
     </Picker>
   );

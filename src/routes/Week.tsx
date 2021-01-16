@@ -2,14 +2,10 @@ import React from "react";
 import { Flex } from "@adobe/react-spectrum";
 import { ResponsiveLine } from "@nivo/line";
 import { addHours, startOfToday, subDays } from "date-fns";
-import {
-  useLogs,
-  useMeals,
-  calculateCalories,
-  useLimit,
-  getDayLogs,
-} from "../utils/database";
+import { useLogs, useLimit } from "../utils/database";
 import { max, min, prop, range, unfold } from "ramda";
+import { calculateCalories, formatDate } from "../utils/model";
+import { get } from "../utils/utils";
 
 function getWeek(date: Date) {
   return range(0, 7).map((diff) => subDays(date, diff));
@@ -18,11 +14,10 @@ function getWeek(date: Date) {
 export default function Week() {
   const [limit] = useLimit();
   const [logs] = useLogs();
-  const [meals] = useMeals();
   const week = getWeek(startOfToday());
   const data = week.map((day) => ({
     x: day,
-    y: calculateCalories(getDayLogs(logs, day), meals),
+    y: calculateCalories([...get(logs, formatDate(day), new Map()).values()]),
   }));
 
   const calories = data.map(prop("y"));
@@ -54,7 +49,7 @@ export default function Week() {
           {
             axis: "y",
             value: limit,
-            legend: `Limit`,
+            legend: "Limit",
             textStyle: { fontSize: 10 },
             lineStyle: { strokeDasharray: "1 2" },
           },

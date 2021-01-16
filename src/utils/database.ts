@@ -1,8 +1,17 @@
-import { formatISO, isSameDay, parseISO } from "date-fns";
 import { useState } from "react";
 import produce from "immer";
-import { v4 as uuid } from "uuid";
-import { map, sum } from "ramda";
+import superjson from "superjson";
+import {
+  Calories,
+  DateString,
+  DateTimeString,
+  formatDate,
+  Log,
+  Meal,
+  uuid,
+  UUID,
+} from "./model";
+import { get } from "./utils";
 
 function useLocalStorage<T>(
   key: string,
@@ -23,97 +32,94 @@ function useLocalStorage<T>(
 }
 
 export function useLimit() {
-  return useLocalStorage("limit", 1000, parseInt, String);
+  return useLocalStorage("limit", 1000, (n) => Number.parseInt(n, 10), String);
 }
 
-export function getDayLogs(logs: Log[], date: Date) {
-  return logs.filter((log) => isSameDay(parseISO(log.timestamp), date));
-}
+type Logs = Map<DateString, Map<DateTimeString, Log>>;
 
 export function useLogs() {
-  const [logs, setLogs] = useLocalStorage<Log[]>(
+  return useLocalStorage<Logs>(
     "logs",
-    [],
-    JSON.parse,
-    JSON.stringify
+    new Map(),
+    superjson.parse,
+    superjson.stringify
   );
+}
+
+export function useDayLogs(day: Date) {
+  const dayString = formatDate(day);
+  const [logs, setLogs] = useLogs();
   const [meals] = useMeals();
-  function addLog(mealId: string, portion: number) {
-    const { name, calories } = findMeal(mealId, meals);
+
+  const dayLogs = get(logs, dayString, new Map());
+
+  function addDayLog(
+    mealId: string,
+    portion: number,
+    timestamp: DateTimeString
+  ) {
+    const { name, calories } = get(meals, mealId);
     setLogs(
-      produce((draft: Log[]) => {
-        draft.push({
+      produce((draft: Logs) => {
+        const dayLogs = get(draft, dayString, new Map());
+        const log = {
           meal: { name, calories },
           portion,
-          timestamp: formatISO(new Date()),
-        });
+          timestamp: timestamp,
+        };
+        dayLogs.set(timestamp, log);
+        draft.set(dayString, dayLogs);
       })
     );
   }
-  function deleteLog(log: Log) {
-    setLogs((logs) => logs.filter((v: Log) => v.timestamp !== log.timestamp));
+
+  function deleteDayLog(log: Log) {
+    setLogs(
+      produce((draft: Logs) => {
+        const dayLogs = get(draft, dayString);
+        dayLogs.delete(log.timestamp);
+      })
+    );
   }
-  return [logs, addLog, deleteLog] as const;
+
+  return [dayLogs, addDayLog, deleteDayLog] as const;
 }
 
-export function findMeal(mealId: string, meals: Meal[]) {
-  const maybeMeal = meals.find((meal) => (meal.id = mealId));
-  if (maybeMeal) {
-    return maybeMeal;
-  } else {
-    throw new Error(`Meal ${mealId} not found!`);
-  }
-}
-
-export function calculateCalories(logs: Log[], meals: Meal[]) {
-  return sum(map((log) => log.meal.calories * log.portion, logs));
-}
-
-export function useMeal(mealId: string) {
-  const [meals] = useMeals();
-  return findMeal(mealId, meals);
-}
+type Meals = Map<UUID, Meal>;
 
 export function useMeals() {
-  const [meals, setMeals] = useLocalStorage<Meal[]>(
+  const [meals, setMeals] = useLocalStorage<Meals>(
     "meals",
-    [],
-    JSON.parse,
-    JSON.stringify
+    new Map(),
+    superjson.parse,
+    superjson.stringify
   );
-  function addMeal(name: string, calories: number) {
+
+  function addMeal(name: string, calories: Calories) {
     setMeals(
-      produce((draft) => {
-        draft.push({ id: uuid(), name, calories });
+      produce((draft: Meals) => {
+        const id = uuid();
+        draft.set(id, { id, name, calories });
       })
     );
   }
-  function editMeal(id: string, name: string, calories: number) {
+
+  function editMeal(id: string, name: string, calories: Calories) {
     setMeals(
-      produce((draft: Meal[]) => {
-        const maybeMeal = draft.find((meal: Meal) => meal.id === id);
-        if (maybeMeal) {
-          maybeMeal.name = name;
-          maybeMeal.calories = calories;
-        }
+      produce((draft: Meals) => {
+        const meal = get(draft, id);
+        meal.name = name;
+        meal.calories = calories;
       })
     );
   }
-  function deleteMeal(id: string) {
-    setMeals((meals) => meals.filter((meal: Meal) => meal.id !== id));
+
+  function deleteMeal(id: UUID) {
+    setMeals(
+      produce((draft: Meals) => {
+        draft.delete(id);
+      })
+    );
   }
   return [meals, addMeal, editMeal, deleteMeal] as const;
 }
-
-type Calories = number;
-
-export type Meal = { id: string; name: string; calories: Calories };
-
-export type Log = {
-  meal: {
-    name: string;
-    calories: Calories;
-  };
-  portion: number;
-  timestamp: string;
-};

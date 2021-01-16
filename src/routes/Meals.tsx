@@ -50,9 +50,9 @@ export default function Meals() {
           </Dialog>
         )}
       </DialogTrigger>
-      <List items={meals}>
+      <List items={[...meals.values()]}>
         {(meal) => (
-          <DialogTrigger type="tray" isDismissable key={meal.name}>
+          <DialogTrigger type="tray" isDismissable key={meal.id}>
             <ActionButton isQuiet>
               <Text>{meal.name}</Text>
               <Text>{meal.calories} kcal</Text>
