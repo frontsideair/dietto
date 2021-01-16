@@ -34,7 +34,7 @@ export function useLimit() {
   return useLocalStorage("limit", 1000, (n) => Number.parseInt(n, 10), String);
 }
 
-type Logs = Map<DateString, Map<DateTimeString, Log>>;
+type Logs = Map<DateString, Map<UUID, Log>>;
 
 export function useLogs() {
   return useLocalStorage<Logs>(
@@ -52,24 +52,20 @@ export function useDayLogs(day: Date) {
 
   const dayLogs = get(logs, dayString, new Map());
 
-  function addDayLog(
-    mealId: string,
-    portion: number,
-    timestamp: DateTimeString
-  ) {
+  function addDayLog(mealId: string, portion: number) {
     const { name, calories } = mealId
       ? get(meals, mealId)
       : { name: "Raw calories", calories: 1 };
-    const dayString = formatDate(parseDate(timestamp));
     setLogs(
       produce((draft: Logs) => {
         const dayLogs = get(draft, dayString, new Map());
+        const id = uuid();
         const log = {
+          id,
           meal: { name, calories },
           portion,
-          timestamp,
         };
-        dayLogs.set(timestamp, log);
+        dayLogs.set(id, log);
         draft.set(dayString, dayLogs);
       })
     );
@@ -79,7 +75,7 @@ export function useDayLogs(day: Date) {
     setLogs(
       produce((draft: Logs) => {
         const dayLogs = get(draft, dayString);
-        dayLogs.delete(log.timestamp);
+        dayLogs.delete(log.id);
       })
     );
   }

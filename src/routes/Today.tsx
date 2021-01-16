@@ -19,8 +19,7 @@ import { useDayLogs, useLimit, useMeals } from "../utils/database";
 import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
-import { calculateCalories, Meal } from "../utils/model";
-import { formatDateTime } from "../utils/utils";
+import { calculateCalories, Log, Meal } from "../utils/model";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -88,7 +87,7 @@ export default function Today() {
                 onSubmit={(event: FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
                   const { meal, portion } = event.currentTarget;
-                  addDayLog(meal.value, portion.value, formatDateTime(date));
+                  addDayLog(meal.value, portion.value);
                   close();
                 }}
               >
@@ -108,8 +107,8 @@ export default function Today() {
         )}
       </DialogTrigger>
       <List items={[...dayLogs.values()]}>
-        {(log) => (
-          <DialogTrigger type="tray" key={log.timestamp}>
+        {(log: Log) => (
+          <DialogTrigger type="tray" key={log.id}>
             <ActionButton isQuiet>
               <LogItem>{log}</LogItem>
             </ActionButton>
@@ -143,7 +142,7 @@ function MealPicker() {
     <label>
       Meal
       <br />
-      <select name="meal">
+      <select name="meal" style={{ fontSize: 16 }}>
         <option value="">Raw calories</option>
         {[...meals.values()].map((meal: Meal) => (
           <option key={meal.id} value={meal.id}>

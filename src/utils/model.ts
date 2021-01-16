@@ -15,12 +15,12 @@ export function uuid(): UUID {
 }
 
 export type Log = {
+  id: UUID;
   meal: {
     name: string;
     calories: Calories;
   };
   portion: number;
-  timestamp: DateTimeString;
 };
 
 export function calculateCalories(logs: Log[]): Calories {
