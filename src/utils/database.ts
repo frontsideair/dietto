@@ -1,16 +1,8 @@
 import { useState } from "react";
 import produce from "immer";
 import superjson from "superjson";
-import {
-  Calories,
-  DateString,
-  DateTimeString,
-  Log,
-  Meal,
-  uuid,
-  UUID,
-} from "./model";
-import { formatDate, get, parseDate } from "./utils";
+import { Calories, DateString, Log, Meal, uuid, UUID } from "./model";
+import { formatDate, get } from "./utils";
 
 function useLocalStorage<T>(
   key: string,
