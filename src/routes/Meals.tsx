@@ -35,7 +35,7 @@ export default function Meals() {
                   close();
                 }}
               >
-                <TextField name="mealname" label="Name" isRequired autoFocus />
+                <TextField name="mealname" label="Meal" isRequired autoFocus />
                 <TextField
                   inputMode="numeric"
                   name="calories"
@@ -71,7 +71,7 @@ export default function Meals() {
                   >
                     <TextField
                       name="mealname"
-                      label="Name"
+                      label="Meal"
                       defaultValue={meal.name}
                       isRequired
                       autoFocus
