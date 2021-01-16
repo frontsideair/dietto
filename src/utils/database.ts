@@ -5,13 +5,12 @@ import {
   Calories,
   DateString,
   DateTimeString,
-  formatDate,
   Log,
   Meal,
   uuid,
   UUID,
 } from "./model";
-import { get } from "./utils";
+import { formatDate, get, parseDate } from "./utils";
 
 function useLocalStorage<T>(
   key: string,
@@ -59,13 +58,14 @@ export function useDayLogs(day: Date) {
     timestamp: DateTimeString
   ) {
     const { name, calories } = get(meals, mealId);
+    const dayString = formatDate(parseDate(timestamp));
     setLogs(
       produce((draft: Logs) => {
         const dayLogs = get(draft, dayString, new Map());
         const log = {
           meal: { name, calories },
           portion,
-          timestamp: timestamp,
+          timestamp,
         };
         dayLogs.set(timestamp, log);
         draft.set(dayString, dayLogs);

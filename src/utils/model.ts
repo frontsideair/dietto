@@ -1,4 +1,3 @@
-import { formatISO, parseISO } from "date-fns";
 import { v4 } from "uuid";
 
 type Opaque<K, T> = T & { __TYPE__: K };
@@ -6,18 +5,6 @@ type Opaque<K, T> = T & { __TYPE__: K };
 export type DateTimeString = Opaque<"DateTimeString", string>;
 export type DateString = Opaque<"DateString", string>;
 export type UUID = Opaque<"UUID", string>;
-
-export function formatDate(date: Date): DateString {
-  return formatISO(date, { representation: "date" }) as DateString;
-}
-
-export function formatDateTime(date: Date): DateTimeString {
-  return formatISO(date, { representation: "complete" }) as DateTimeString;
-}
-
-export function parseDate(dateString: DateString | DateTimeString): Date {
-  return parseISO(dateString);
-}
 
 export type Calories = Opaque<"Calories", number>;
 

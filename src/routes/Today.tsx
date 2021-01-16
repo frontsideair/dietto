@@ -19,23 +19,25 @@ import { useDayLogs, useLimit, useMeals } from "../utils/database";
 import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
-import { calculateCalories, formatDateTime, Meal } from "../utils/model";
+import { calculateCalories, Meal } from "../utils/model";
+import { formatDateTime } from "../utils/utils";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
-const PINK = "rgba(255, 255, 0, 10%)";
+const YELLOWISH = "rgba(255, 255, 0, 10%)";
 const GRAY = "rgba(0, 0, 0, 50%)";
 
 function CenteredMetric({ dataWithArc, centerX, centerY }: any) {
+  const { calories, limit } = dataWithArc[0].data;
   return (
     <text
       x={centerX}
       y={centerY}
       textAnchor="middle"
       dominantBaseline="central"
-      style={{ fontSize: "52px" }}
+      style={{ fontSize: "24px" }}
     >
-      {dataWithArc[0].data.calories}
+      {calories} / {limit}
     </text>
   );
 }
@@ -46,10 +48,11 @@ export default function Today() {
   const [dayLogs, addDayLog, deleteDayLog] = useDayLogs(date);
   const calories = calculateCalories([...dayLogs.values()]);
   const caloriesData = calories % limit;
+
   return (
     <Flex direction="column" flexGrow={1}>
       <Datepicker date={date} setDate={setDate} />
-      <Flex height="100vw">
+      <Flex height="56.25vw">
         <ResponsivePie
           margin={{ top: 24, right: 24, bottom: 24, left: 24 }}
           data={[
@@ -63,7 +66,7 @@ export default function Today() {
             {
               id: "remaining",
               value: limit - caloriesData,
-              color: calories > limit ? PINK : GRAY,
+              color: calories > limit ? YELLOWISH : GRAY,
             },
           ]}
           colors={{ datum: "data.color" }}
@@ -85,11 +88,7 @@ export default function Today() {
                 onSubmit={(event: FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
                   const { meal, portion } = event.currentTarget;
-                  addDayLog(
-                    meal.value,
-                    portion.value,
-                    formatDateTime(new Date())
-                  );
+                  addDayLog(meal.value, portion.value, formatDateTime(date));
                   close();
                 }}
               >

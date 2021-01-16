@@ -4,8 +4,8 @@ import { ResponsiveLine } from "@nivo/line";
 import { addHours, startOfToday, subDays } from "date-fns";
 import { useLogs, useLimit } from "../utils/database";
 import { max, min, prop, range, unfold } from "ramda";
-import { calculateCalories, formatDate } from "../utils/model";
-import { get } from "../utils/utils";
+import { calculateCalories } from "../utils/model";
+import { formatDate, get } from "../utils/utils";
 
 function getWeek(date: Date) {
   return range(0, 7).map((diff) => subDays(date, diff));

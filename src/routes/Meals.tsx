@@ -9,11 +9,11 @@ import {
   Heading,
   TextField,
   Button,
-  Text,
   Flex,
 } from "@adobe/react-spectrum";
 import { useMeals } from "../utils/database";
 import List from "../components/List";
+import MealItem from "../components/MealItem";
 
 export default function Meals() {
   const [meals, addMeal, editMeal, deleteMeal] = useMeals();
@@ -54,8 +54,7 @@ export default function Meals() {
         {(meal) => (
           <DialogTrigger type="tray" isDismissable key={meal.id}>
             <ActionButton isQuiet>
-              <Text>{meal.name}</Text>
-              <Text>{meal.calories} kcal</Text>
+              <MealItem>{meal}</MealItem>
             </ActionButton>
             {(close) => (
               <Dialog>
