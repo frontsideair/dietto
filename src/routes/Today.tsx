@@ -20,6 +20,7 @@ import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
 import { calculateCalories, Log, Meal } from "../utils/model";
+import { startOfToday } from "date-fns";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -42,7 +43,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY }: any) {
 }
 
 export default function Today() {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(startOfToday());
   const [limit] = useLimit();
   const [dayLogs, addDayLog, deleteDayLog] = useDayLogs(date);
   const calories = calculateCalories([...dayLogs.values()]);
