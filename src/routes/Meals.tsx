@@ -20,7 +20,7 @@ export default function Meals() {
 
   return (
     <Flex direction="column" flexGrow={1}>
-      <DialogTrigger type="tray" isDismissable>
+      <DialogTrigger type="tray">
         <ActionButton>Add</ActionButton>
         {(close) => (
           <Dialog>
@@ -52,7 +52,7 @@ export default function Meals() {
       </DialogTrigger>
       <List items={[...meals.values()]}>
         {(meal) => (
-          <DialogTrigger type="tray" isDismissable key={meal.id}>
+          <DialogTrigger type="tray" key={meal.id}>
             <ActionButton isQuiet>
               <MealItem>{meal}</MealItem>
             </ActionButton>

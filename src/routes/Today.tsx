@@ -92,9 +92,7 @@ export default function Today() {
                   close();
                 }}
               >
-                <MealPicker>
-                  {(meal) => <Item key={meal.id}>{meal.name}</Item>}
-                </MealPicker>
+                <MealPicker />
                 <TextField
                   inputMode="numeric"
                   name="portion"
@@ -111,7 +109,7 @@ export default function Today() {
       </DialogTrigger>
       <List items={[...dayLogs.values()]}>
         {(log) => (
-          <DialogTrigger type="tray" isDismissable key={log.timestamp}>
+          <DialogTrigger type="tray" key={log.timestamp}>
             <ActionButton isQuiet>
               <LogItem>{log}</LogItem>
             </ActionButton>
@@ -139,11 +137,19 @@ export default function Today() {
   );
 }
 
-function MealPicker({ children }: { children: (meal: Meal) => any }) {
+function MealPicker() {
   const [meals] = useMeals();
   return (
-    <Picker name="meal" label="Meal" items={[...meals.values()]} isRequired>
-      {children}
-    </Picker>
+    <label>
+      Meal
+      <br />
+      <select name="meal">
+        {[...meals.values()].map((meal: Meal) => (
+          <option key={meal.id} value={meal.id}>
+            {meal.name}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
