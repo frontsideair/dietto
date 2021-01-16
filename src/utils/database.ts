@@ -57,7 +57,9 @@ export function useDayLogs(day: Date) {
     portion: number,
     timestamp: DateTimeString
   ) {
-    const { name, calories } = get(meals, mealId);
+    const { name, calories } = mealId
+      ? get(meals, mealId)
+      : { name: "Raw calories", calories: 1 };
     const dayString = formatDate(parseDate(timestamp));
     setLogs(
       produce((draft: Logs) => {

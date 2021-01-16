@@ -144,6 +144,7 @@ function MealPicker() {
       Meal
       <br />
       <select name="meal">
+        <option value="">Raw calories</option>
         {[...meals.values()].map((meal: Meal) => (
           <option key={meal.id} value={meal.id}>
             {meal.name}
