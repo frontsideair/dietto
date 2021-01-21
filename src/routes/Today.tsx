@@ -10,6 +10,7 @@ import {
   TextField,
   Button,
   Flex,
+  View,
 } from "@adobe/react-spectrum";
 import { ResponsivePie } from "@nivo/pie";
 
@@ -17,8 +18,9 @@ import { useDayLogs, useLimit, useMeals } from "../utils/database";
 import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
-import { calculateCalories, Log, Meal } from "../utils/model";
+import { calculateCalories, Calories, Log, Meal } from "../utils/model";
 import { startOfToday } from "date-fns";
+import { get } from "../utils/utils";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -82,25 +84,12 @@ export default function Today() {
             <Heading>What did you eat?</Heading>
             <Divider />
             <Content>
-              <Form
-                onSubmit={(event: FormEvent<HTMLFormElement>) => {
-                  event.preventDefault();
-                  const { meal, portion } = event.currentTarget;
-                  addDayLog(meal.value, portion.value);
+              <MealForm
+                onSubmit={(name, calories, portion) => {
+                  addDayLog(name, calories, portion);
                   close();
                 }}
-              >
-                <MealPicker />
-                <TextField
-                  inputMode="numeric"
-                  name="portion"
-                  label="Portion"
-                  isRequired
-                />
-                <Button variant="cta" type="submit">
-                  Add
-                </Button>
-              </Form>
+              />
             </Content>
           </Dialog>
         )}
@@ -135,20 +124,90 @@ export default function Today() {
   );
 }
 
-function MealPicker() {
+type MealFormProps = {
+  onSubmit: (name: string, calories: number, portion: number) => void;
+};
+
+function MealForm({ onSubmit }: MealFormProps) {
   const [meals] = useMeals();
-  return (
-    <label>
-      Meal
-      <br />
-      <select name="meal" style={{ fontSize: 16 }}>
-        <option value="">Raw calories</option>
+  const [mealId, setMealId] = useState("");
+  const [mealName, setMealName] = useState("");
+  const [mealCalories, setMealCalories] = useState("");
+  const [portion, setPortion] = useState("1");
+
+  const select = (
+    <View elementType="label">
+      <View paddingY="size-40">Meal</View>
+      <select
+        name="meal"
+        style={{ fontSize: 16, height: 40, width: "100%" }}
+        value={mealId}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+          const mealId = event.currentTarget.value;
+          const { name, calories } = mealId
+            ? get(meals, mealId)
+            : { name: "", calories: 0 as Calories };
+          setMealId(mealId);
+          setMealName(name);
+          setMealCalories(String(calories));
+          setPortion("1");
+        }}
+      >
+        <option value="">New</option>
         {[...meals.values()].map((meal: Meal) => (
           <option key={meal.id} value={meal.id}>
             {meal.name}
           </option>
         ))}
       </select>
-    </label>
+    </View>
+  );
+
+  return (
+    <Form
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        onSubmit(
+          mealName,
+          Number.parseInt(mealCalories, 10),
+          Number.parseInt(portion, 10)
+        );
+      }}
+    >
+      {mealId ? (
+        select
+      ) : (
+        <Flex>
+          {select}
+          <TextField
+            name="mealname"
+            label="Name"
+            value={mealName}
+            onChange={setMealName}
+            marginStart="size-200"
+          />
+        </Flex>
+      )}
+      {mealId ? (
+        <TextField
+          inputMode="numeric"
+          name="portion"
+          label="Portion"
+          isRequired
+          value={portion}
+          onChange={setPortion}
+        />
+      ) : (
+        <TextField
+          name="calories"
+          label="Calories"
+          value={mealCalories}
+          onChange={setMealCalories}
+        />
+      )}
+      <Button variant="cta" type="submit">
+        Add
+      </Button>
+    </Form>
   );
 }
