@@ -199,8 +199,10 @@ function MealForm({ onSubmit }: MealFormProps) {
         />
       ) : (
         <TextField
+          inputMode="numeric"
           name="calories"
           label="Calories"
+          isRequired
           value={mealCalories}
           onChange={setMealCalories}
         />
