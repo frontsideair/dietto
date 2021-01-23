@@ -61,7 +61,7 @@ export default function Settings() {
             });
           }}
         >
-          <TextField type="file" name="data" label="Paste export data here" />
+          <TextField type="file" name="data" label="Export data" />
           <Button variant="cta" type="submit">
             Import data
           </Button>
