@@ -153,7 +153,7 @@ function MealForm({ onSubmit }: MealFormProps) {
           setPortion("1");
         }}
       >
-        <option value="">New</option>
+        <option value="">Other</option>
         {[...meals.values()].map((meal: Meal) => (
           <option key={meal.id} value={meal.id}>
             {meal.name}
