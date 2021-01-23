@@ -170,7 +170,7 @@ function MealForm({ onSubmit }: MealFormProps) {
         onSubmit(
           mealName,
           Number.parseInt(mealCalories, 10),
-          Number.parseInt(portion, 10)
+          Number.parseFloat(portion)
         );
       }}
     >
@@ -190,7 +190,7 @@ function MealForm({ onSubmit }: MealFormProps) {
       )}
       {mealId ? (
         <TextField
-          inputMode="numeric"
+          inputMode="decimal"
           name="portion"
           label="Portion"
           isRequired
