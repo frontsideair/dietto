@@ -13,7 +13,7 @@ export default function FAB() {
       width="size-1000"
       height="size-1000"
     >
-      <AddCircle size="XXL" />
+      <AddCircle size="XXL" color="notice" />
     </Button>
   );
 }
