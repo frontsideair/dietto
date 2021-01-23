@@ -14,8 +14,13 @@ import Settings from "./routes/Settings";
 enableMapSet();
 
 ReactDOM.render(
-  <Provider theme={defaultTheme} marginX="auto">
-    <Flex direction="column" minHeight="100vh" maxWidth="56.25vh">
+  <Provider theme={defaultTheme}>
+    <Flex
+      direction="column"
+      minHeight="100vh"
+      maxWidth="56.25vh"
+      marginX="auto"
+    >
       <Tabs aria-label="Diet App">
         <Item title="Today" key="today">
           <Today />

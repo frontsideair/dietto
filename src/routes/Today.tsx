@@ -22,6 +22,7 @@ import { calculateCalories, Calories, Log, Meal } from "../utils/model";
 import { startOfToday } from "date-fns";
 import { get } from "../utils/utils";
 import FAB from "../components/FAB";
+import AspectRatio from "../components/AspectRatio";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -53,7 +54,7 @@ export default function Today() {
   return (
     <Flex direction="column" flexGrow={1}>
       <Datepicker date={date} setDate={setDate} />
-      <Flex height="56.25vw">
+      <AspectRatio ratio={16 / 9}>
         <ResponsivePie
           margin={{ top: 24, right: 24, bottom: 24, left: 24 }}
           data={[
@@ -77,7 +78,7 @@ export default function Today() {
           isInteractive={false}
           layers={["slices", CenteredMetric]}
         />
-      </Flex>
+      </AspectRatio>
       <List items={[...dayLogs.values()]}>
         {(log: Log) => (
           <DialogTrigger type="tray" key={log.id}>
