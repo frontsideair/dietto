@@ -21,6 +21,7 @@ import LogItem from "../components/LogItem";
 import { calculateCalories, Calories, Log, Meal } from "../utils/model";
 import { startOfToday } from "date-fns";
 import { get } from "../utils/utils";
+import FAB from "../components/FAB";
 
 const YELLOW = "rgba(255, 255, 0, 100%)";
 const RED = "rgba(255, 0, 0, 100%)";
@@ -77,23 +78,6 @@ export default function Today() {
           layers={["slices", CenteredMetric]}
         />
       </Flex>
-      <DialogTrigger type="tray">
-        <ActionButton>Add</ActionButton>
-        {(close) => (
-          <Dialog>
-            <Heading>What did you eat?</Heading>
-            <Divider />
-            <Content>
-              <MealForm
-                onSubmit={(name, calories, portion) => {
-                  addDayLog(name, calories, portion);
-                  close();
-                }}
-              />
-            </Content>
-          </Dialog>
-        )}
-      </DialogTrigger>
       <List items={[...dayLogs.values()]}>
         {(log: Log) => (
           <DialogTrigger type="tray" key={log.id}>
@@ -120,6 +104,23 @@ export default function Today() {
           </DialogTrigger>
         )}
       </List>
+      <DialogTrigger type="tray">
+        <FAB />
+        {(close) => (
+          <Dialog>
+            <Heading>What did you eat?</Heading>
+            <Divider />
+            <Content>
+              <MealForm
+                onSubmit={(name, calories, portion) => {
+                  addDayLog(name, calories, portion);
+                  close();
+                }}
+              />
+            </Content>
+          </Dialog>
+        )}
+      </DialogTrigger>
     </Flex>
   );
 }
