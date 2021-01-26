@@ -4,7 +4,7 @@ import { ResponsiveLine } from "@nivo/line";
 import { addHours, startOfToday, subDays } from "date-fns";
 import { useLogs, useLimit } from "../utils/database";
 import { max, min, prop, range, unfold } from "ramda";
-import { calculateCalories } from "../utils/model";
+import { logsCalories } from "../utils/model";
 import { formatDate, get } from "../utils/utils";
 import Datepicker from "../components/Datepicker";
 import AspectRatio from "../components/AspectRatio";
@@ -20,7 +20,7 @@ export default function Week() {
   const week = getWeek(date);
   const data = week.map((day) => ({
     x: day,
-    y: calculateCalories([...get(logs, formatDate(day), new Map()).values()]),
+    y: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
   }));
 
   const calories = data.map(prop("y"));
