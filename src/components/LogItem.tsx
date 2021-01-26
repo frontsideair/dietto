@@ -1,17 +1,18 @@
 import React from "react";
 import { Flex, Text } from "@adobe/react-spectrum";
-import { Log } from "../utils/model";
+import { logCalories, Log } from "../utils/model";
 
 export default function LogItem({ children }: { children: Log }) {
+  const portion = children.portion ? `(${children.portion})` : "";
   return (
     <Flex justifyContent="space-between" flexGrow={1}>
       <Flex>
         <Text>
-          {children.portion} {children.meal.name}
+          {children.meal.name} {portion}
         </Text>
       </Flex>
       <Flex>
-        <Text>{children.portion * children.meal.calories} kcal</Text>
+        <Text>{logCalories(children)} kcal</Text>
       </Flex>
     </Flex>
   );

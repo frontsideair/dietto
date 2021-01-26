@@ -18,7 +18,7 @@ import { useDayLogs, useLimit, useMeals } from "../utils/database";
 import Datepicker from "../components/Datepicker";
 import List from "../components/List";
 import LogItem from "../components/LogItem";
-import { calculateCalories, Calories, Log, Meal } from "../utils/model";
+import { logsCalories, Log, Meal } from "../utils/model";
 import { startOfToday } from "date-fns";
 import { get } from "../utils/utils";
 import FAB from "../components/FAB";
@@ -48,7 +48,7 @@ export default function Today() {
   const [date, setDate] = useState(startOfToday());
   const [limit] = useLimit();
   const [dayLogs, addDayLog, deleteDayLog] = useDayLogs(date);
-  const calories = calculateCalories([...dayLogs.values()]);
+  const calories = logsCalories([...dayLogs.values()]);
   const caloriesData = calories % limit;
 
   return (
@@ -127,7 +127,7 @@ export default function Today() {
 }
 
 type MealFormProps = {
-  onSubmit: (name: string, calories: number, portion: number) => void;
+  onSubmit: (name: string, calories: number, portion: number | null) => void;
 };
 
 function MealForm({ onSubmit }: MealFormProps) {
@@ -148,7 +148,7 @@ function MealForm({ onSubmit }: MealFormProps) {
           const mealId = event.currentTarget.value;
           const { name, calories } = mealId
             ? get(meals, mealId)
-            : { name: "", calories: 0 as Calories };
+            : { name: "", calories: 0 };
           setMealId(mealId);
           setMealName(name);
           setMealCalories(String(calories));
@@ -172,7 +172,7 @@ function MealForm({ onSubmit }: MealFormProps) {
         onSubmit(
           mealName,
           Number.parseInt(mealCalories, 10),
-          Number.parseFloat(portion)
+          mealId ? Number.parseFloat(portion) : null
         );
       }}
     >

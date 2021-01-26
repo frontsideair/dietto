@@ -43,7 +43,7 @@ export function useDayLogs(day: Date) {
 
   const dayLogs = get(logs, dayString, new Map());
 
-  function addDayLog(name: string, calories: number, portion: number) {
+  function addDayLog(name: string, calories: number, portion: number | null) {
     setLogs(
       produce((draft: Logs) => {
         const dayLogs = get(draft, dayString, new Map());

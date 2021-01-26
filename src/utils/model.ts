@@ -20,13 +20,13 @@ export type Log = {
     name: string;
     calories: Calories;
   };
-  portion: number;
+  portion: number | null;
 };
 
-export function calculateCalories(logs: Log[]): Calories {
-  return logs.reduce(
-    (acc: Calories, log: Log) =>
-      (acc + log.meal.calories * log.portion) as Calories,
-    0 as Calories
-  );
+export function logCalories(log: Log) {
+  return log.meal.calories * (log.portion ?? 1);
+}
+
+export function logsCalories(logs: Log[]) {
+  return logs.reduce((acc, log) => acc + logCalories(log), 0);
 }
