@@ -105,7 +105,7 @@ export default function Today() {
           </DialogTrigger>
         )}
       </List>
-      <DialogTrigger type="tray">
+      <DialogTrigger type="fullscreenTakeover">
         <FAB />
         {(close) => (
           <Dialog>
@@ -113,6 +113,7 @@ export default function Today() {
             <Divider />
             <Content>
               <MealForm
+                close={close}
                 onSubmit={(name, calories, portion) => {
                   addDayLog(name, calories, portion);
                   close();
@@ -128,9 +129,10 @@ export default function Today() {
 
 type MealFormProps = {
   onSubmit: (name: string, calories: number, portion: number | null) => void;
+  close: () => void;
 };
 
-function MealForm({ onSubmit }: MealFormProps) {
+function MealForm({ onSubmit, close }: MealFormProps) {
   const [meals] = useMeals();
   const [mealId, setMealId] = useState("");
   const [mealName, setMealName] = useState("");
@@ -209,6 +211,9 @@ function MealForm({ onSubmit }: MealFormProps) {
           onChange={setMealCalories}
         />
       )}
+      <Button variant="secondary" onPress={close}>
+        Cancel
+      </Button>
       <Button variant="cta" type="submit">
         Add
       </Button>
