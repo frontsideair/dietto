@@ -23,7 +23,7 @@ export default function Meals() {
     <Flex direction="column" flexGrow={1}>
       <List items={[...meals.values()]}>
         {(meal) => (
-          <DialogTrigger type="tray" key={meal.id}>
+          <DialogTrigger type="fullscreenTakeover" key={meal.id}>
             <ActionButton isQuiet>
               <MealItem>{meal}</MealItem>
             </ActionButton>
@@ -54,8 +54,8 @@ export default function Meals() {
                       defaultValue={String(meal.calories)}
                       isRequired
                     />
-                    <Button variant="cta" type="submit">
-                      Save
+                    <Button variant="secondary" onPress={close}>
+                      Cancel
                     </Button>
                     <Button
                       variant="negative"
@@ -66,6 +66,9 @@ export default function Meals() {
                     >
                       Delete
                     </Button>
+                    <Button variant="cta" type="submit">
+                      Save
+                    </Button>
                   </Form>
                 </Content>
               </Dialog>
@@ -73,7 +76,7 @@ export default function Meals() {
           </DialogTrigger>
         )}
       </List>
-      <DialogTrigger type="tray">
+      <DialogTrigger type="fullscreenTakeover">
         <FAB />
         {(close) => (
           <Dialog>
@@ -95,6 +98,9 @@ export default function Meals() {
                   label="Calories"
                   isRequired
                 />
+                <Button variant="secondary" onPress={close}>
+                  Cancel
+                </Button>
                 <Button variant="cta" type="submit">
                   Add
                 </Button>
