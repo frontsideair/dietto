@@ -160,7 +160,7 @@ function MealForm({ onSubmit, close }: MealFormProps) {
         <option value="">Other</option>
         {[...meals.values()].map((meal: Meal) => (
           <option key={meal.id} value={meal.id}>
-            {meal.name}
+            {meal.name} ({meal.calories})
           </option>
         ))}
       </select>
