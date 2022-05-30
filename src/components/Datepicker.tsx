@@ -3,7 +3,7 @@ import { Flex, Button, Text } from "@adobe/react-spectrum";
 import ChevronLeft from "@spectrum-icons/workflow/ChevronLeft";
 import ChevronRight from "@spectrum-icons/workflow/ChevronRight";
 import { addDays, isSameDay, startOfToday, subDays } from "date-fns";
-import { formatDate } from "../utils/utils";
+import { formatDate } from "../utils";
 
 type Props = {
   date: Date;

@@ -5,7 +5,7 @@ import { addHours, startOfToday, subDays } from "date-fns";
 import { useLogs, useLimit } from "../utils/database";
 import { max, min, prop, range, unfold } from "ramda";
 import { logsCalories } from "../utils/model";
-import { formatDate, get } from "../utils/utils";
+import { formatDate, get } from "../utils";
 import Datepicker from "../components/Datepicker";
 import AspectRatio from "../components/AspectRatio";
 

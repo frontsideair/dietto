@@ -1,11 +1,19 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { Provider, defaultTheme, Flex } from "@adobe/react-spectrum";
-import { Tabs, Item } from "@react-spectrum/tabs";
+import ReactDOM from "react-dom/client";
+import {
+  Provider,
+  defaultTheme,
+  Flex,
+  Tabs,
+  Item,
+  TabList,
+  TabPanels,
+} from "@adobe/react-spectrum";
 import { enableMapSet } from "immer";
 
 import "./index.css";
 
+import Days from "./routes/Days";
 import Week from "./routes/Week";
 import Today from "./routes/Today";
 import Meals from "./routes/Meals";
@@ -13,29 +21,46 @@ import Settings from "./routes/Settings";
 
 enableMapSet();
 
-ReactDOM.render(
-  <Provider theme={defaultTheme}>
-    <Flex
-      direction="column"
-      minHeight="100vh"
-      maxWidth="56.25vh"
-      marginX="auto"
-    >
-      <Tabs aria-label="Diet App">
-        <Item title="Today" key="today">
-          <Today />
-        </Item>
-        <Item title="Meals" key="meals">
-          <Meals />
-        </Item>
-        <Item title="Week" key="week">
-          <Week />
-        </Item>
-        <Item title="Settings" key="settings">
-          <Settings />
-        </Item>
-      </Tabs>
-    </Flex>
-  </Provider>,
-  document.getElementById("root")
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+root.render(
+  <React.StrictMode>
+    <Provider theme={defaultTheme}>
+      <Flex
+        direction="column"
+        minHeight="100vh"
+        maxWidth="56.25vh"
+        marginX="auto"
+      >
+        <Tabs aria-label="Diet App">
+          <TabList>
+            <Item key="Days">Days</Item>
+            <Item key="Today">Today</Item>
+            <Item key="Meals">Meals</Item>
+            <Item key="Week">Week</Item>
+            <Item key="Settings">Settings</Item>
+          </TabList>
+          <TabPanels>
+            <Item key="Days">
+              <Days />
+            </Item>
+            <Item key="Today">
+              <Today />
+            </Item>
+            <Item key="Meals">
+              <Meals />
+            </Item>
+            <Item key="Week">
+              <Week />
+            </Item>
+            <Item key="Settings">
+              <Settings />
+            </Item>
+          </TabPanels>
+        </Tabs>
+      </Flex>
+    </Provider>
+  </React.StrictMode>
 );
