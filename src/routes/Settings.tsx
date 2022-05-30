@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import {
   Button,
   Content,
@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@adobe/react-spectrum";
 import { useLimit } from "../utils/database";
-import { downloadJSON } from "../utils/utils";
+import { downloadJSON } from "../utils";
 
 export default function Settings() {
   const [limit, setLimit] = useLimit();

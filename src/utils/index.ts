@@ -1,4 +1,4 @@
-import { formatISO, parseISO } from "date-fns";
+import { format, formatISO, parseISO } from "date-fns";
 import { DateString, DateTimeString } from "./model";
 
 export function get<K, V>(map: Map<K, V>, key: K, defaultValue?: V): V {
@@ -12,6 +12,10 @@ export function get<K, V>(map: Map<K, V>, key: K, defaultValue?: V): V {
       throw new Error(`Key ${key} not found in map!`);
     }
   }
+}
+
+export function formatDateHumanReadable(date: Date): string {
+  return format(date, "MM/dd, EEEE");
 }
 
 export function formatDate(date: Date): DateString {
