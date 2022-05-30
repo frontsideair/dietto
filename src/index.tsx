@@ -1,7 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider, defaultTheme, Flex } from "@adobe/react-spectrum";
-import { Tabs, Item } from "@react-spectrum/tabs";
+import {
+  Provider,
+  defaultTheme,
+  Flex,
+  Tabs,
+  Item,
+  TabList,
+  TabPanels,
+} from "@adobe/react-spectrum";
 import { enableMapSet } from "immer";
 
 import "./index.css";
@@ -22,18 +29,26 @@ ReactDOM.render(
       marginX="auto"
     >
       <Tabs aria-label="Diet App">
-        <Item title="Today" key="today">
-          <Today />
-        </Item>
-        <Item title="Meals" key="meals">
-          <Meals />
-        </Item>
-        <Item title="Week" key="week">
-          <Week />
-        </Item>
-        <Item title="Settings" key="settings">
-          <Settings />
-        </Item>
+        <TabList>
+          <Item key="Today">Today</Item>
+          <Item key="Meals">Meals</Item>
+          <Item key="Week">Week</Item>
+          <Item key="Settings">Settings</Item>
+        </TabList>
+        <TabPanels>
+          <Item key="Today">
+            <Today />
+          </Item>
+          <Item key="Meals">
+            <Meals />
+          </Item>
+          <Item key="Week">
+            <Week />
+          </Item>
+          <Item key="Settings">
+            <Settings />
+          </Item>
+        </TabPanels>
       </Tabs>
     </Flex>
   </Provider>,
