@@ -2,6 +2,10 @@
   "name": "dietto",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "16.x",
+    "pnpm": "7.x"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
