@@ -13,8 +13,7 @@ import { enableMapSet } from "immer";
 
 import "./index.css";
 
-import Days from "./routes/Days";
-import Week from "./routes/Week";
+import Week from "./routes/Days";
 import Today from "./routes/Today";
 import Meals from "./routes/Meals";
 import Settings from "./routes/Settings";
@@ -36,16 +35,12 @@ root.render(
       >
         <Tabs aria-label="Diet App">
           <TabList>
-            <Item key="Days">Days</Item>
             <Item key="Today">Today</Item>
             <Item key="Meals">Meals</Item>
             <Item key="Week">Week</Item>
             <Item key="Settings">Settings</Item>
           </TabList>
           <TabPanels>
-            <Item key="Days">
-              <Days />
-            </Item>
             <Item key="Today">
               <Today />
             </Item>
