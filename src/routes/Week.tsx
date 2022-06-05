@@ -1,15 +1,23 @@
+import { useState } from "react";
 import { ActionButton, Button, Flex, View } from "@adobe/react-spectrum";
-import { startOfToday, subDays } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfWeek,
+  isToday,
+  startOfToday,
+  startOfWeek,
+} from "date-fns";
 import { useLogs } from "../utils/database";
-import { range } from "ramda";
 import { logsCalories } from "../utils/model";
 import { formatDate, formatDateHumanReadable, get } from "../utils";
 import List from "../components/List";
-import { useState } from "react";
 import Day from "../components/Day";
 
 function getWeek(date: Date) {
-  return range(0, 7).map((diff) => subDays(date, diff));
+  return eachDayOfInterval({
+    start: startOfWeek(date, { weekStartsOn: 1 }),
+    end: endOfWeek(date, { weekStartsOn: 1 }),
+  });
 }
 
 function Calories(props: { children: number }) {
@@ -24,9 +32,14 @@ export default function Days() {
   const today = startOfToday();
   const week = getWeek(today);
   const data = week.map((day) => ({
-    x: day,
-    y: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
+    day,
+    calories: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
   }));
+  const daysWithData = data.filter((day) => day.calories > 0);
+  const average = Math.floor(
+    daysWithData.reduce((acc, { calories }) => acc + calories, 0) /
+      daysWithData.length
+  );
 
   return (
     <Flex direction="column">
@@ -38,20 +51,26 @@ export default function Days() {
           <Day date={selectedDay} />
         </>
       ) : (
-        <List items={data}>
-          {(item) => (
-            <ActionButton
-              key={item.x.toString()}
-              isQuiet
-              onPress={() => setSelectedDay(item.x)}
-            >
-              <Flex justifyContent="space-between" flexGrow={1}>
-                <View>{formatDateHumanReadable(item.x)}</View>{" "}
-                <Calories>{item.y}</Calories>
-              </Flex>
-            </ActionButton>
-          )}
-        </List>
+        <>
+          <List items={data}>
+            {(item) => (
+              <ActionButton
+                key={item.day.toString()}
+                isQuiet
+                onPress={() => setSelectedDay(item.day)}
+              >
+                <Flex justifyContent="space-between" flexGrow={1}>
+                  <View>
+                    {formatDateHumanReadable(item.day)}{" "}
+                    {isToday(item.day) ? "(Today)" : ""}
+                  </View>{" "}
+                  <Calories>{item.calories}</Calories>
+                </Flex>
+              </ActionButton>
+            )}
+          </List>
+          <View>Weekly average: {average}</View>
+        </>
       )}
     </Flex>
   );
