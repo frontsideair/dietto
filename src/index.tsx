@@ -13,7 +13,7 @@ import { enableMapSet } from "immer";
 
 import "./index.css";
 
-import Week from "./routes/Days";
+import Week from "./routes/Week";
 import Today from "./routes/Today";
 import Meals from "./routes/Meals";
 import Settings from "./routes/Settings";
