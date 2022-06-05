@@ -1,77 +1,77 @@
-import React, { useState } from "react";
-import { Flex } from "@adobe/react-spectrum";
-import { ResponsiveLine } from "@nivo/line";
-import { addHours, startOfToday, subDays } from "date-fns";
-import { useLogs, useLimit } from "../utils/database";
-import { max, min, prop, range, unfold } from "ramda";
+import { useState } from "react";
+import { ActionButton, Button, Flex, View } from "@adobe/react-spectrum";
+import {
+  eachDayOfInterval,
+  endOfWeek,
+  isToday,
+  startOfToday,
+  startOfWeek,
+} from "date-fns";
+import { useLogs } from "../utils/database";
 import { logsCalories } from "../utils/model";
-import { formatDate, get } from "../utils";
-import Datepicker from "../components/Datepicker";
-import AspectRatio from "../components/AspectRatio";
+import { formatDate, formatDateHumanReadable, get } from "../utils";
+import List from "../components/List";
+import Day from "../components/Day";
 
 function getWeek(date: Date) {
-  return range(0, 7).map((diff) => subDays(date, diff));
+  return eachDayOfInterval({
+    start: startOfWeek(date, { weekStartsOn: 1 }),
+    end: endOfWeek(date, { weekStartsOn: 1 }),
+  });
 }
 
-export default function Week() {
-  const [date, setDate] = useState(startOfToday());
-  const [limit] = useLimit();
-  const [logs] = useLogs();
-  const week = getWeek(date);
-  const data = week.map((day) => ({
-    x: day,
-    y: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
-  }));
+function Calories(props: { children: number }) {
+  const calories = props.children;
+  return <View>{calories}</View>;
+}
 
-  const calories = data.map(prop("y"));
-  const minimum = calories.reduce(min);
-  const maximum = calories.reduce(max);
+export default function Days() {
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [logs] = useLogs();
+
+  const today = startOfToday();
+  const week = getWeek(today);
+  const data = week.map((day) => ({
+    day,
+    calories: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
+  }));
+  const daysWithData = data.filter((day) => day.calories > 0);
+  const average = Math.floor(
+    daysWithData.reduce((acc, { calories }) => acc + calories, 0) /
+      daysWithData.length
+  );
 
   return (
     <Flex direction="column">
-      <Datepicker date={date} setDate={setDate} />
-      <AspectRatio ratio={16 / 9}>
-        <ResponsiveLine
-          data={[{ id: "data", data }]}
-          margin={{ top: 24, right: 24, bottom: 24, left: 24 }}
-          xScale={{
-            type: "time",
-            useUTC: false,
-            max: addHours(startOfToday(), 23),
-          }}
-          yScale={{
-            type: "linear",
-            min: min(minimum, limit),
-            max: max(maximum, limit),
-          }}
-          xFormat="time:%Y-%m-%d"
-          axisBottom={{ format: "%b %d", tickValues: "every day" }}
-          axisLeft={null}
-          gridXValues={week}
-          gridYValues={unfold((n) => (n >= limit ? false : [n, n + 100]), 0)}
-          theme={{ grid: { line: { stroke: "#c0d7ff88" } } }}
-          markers={[
-            {
-              axis: "y",
-              value: limit,
-              legend: "Limit",
-              textStyle: { fontSize: 10 },
-              lineStyle: { strokeDasharray: "1 2" },
-            },
-            {
-              axis: "y",
-              value: minimum,
-              lineStyle: { strokeDasharray: "1 2" },
-            },
-            {
-              axis: "y",
-              value: maximum,
-              lineStyle: { strokeDasharray: "1 2" },
-            },
-          ]}
-          enablePointLabel={true}
-        />
-      </AspectRatio>
+      {selectedDay ? (
+        <>
+          <Button variant="cta" onPress={() => setSelectedDay(null)}>
+            Go back
+          </Button>
+          <Day date={selectedDay} />
+        </>
+      ) : (
+        <>
+          <List items={data}>
+            {(item) => (
+              <ActionButton
+                key={item.day.toString()}
+                isQuiet
+                onPress={() => setSelectedDay(item.day)}
+              >
+                <Flex justifyContent="space-between" flexGrow={1}>
+                  <View>
+                    {formatDateHumanReadable(item.day)}{" "}
+                    {isToday(item.day) ? "(Today)" : ""}
+                  </View>{" "}
+                  <Calories>{item.calories}</Calories>
+                </Flex>
+              </ActionButton>
+            )}
+          </List>
+          <View>Weekly average: {average}</View>
+        </>
+      )}
     </Flex>
   );
 }
