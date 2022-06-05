@@ -36,19 +36,19 @@ root.render(
         <Tabs aria-label="Diet App">
           <TabList>
             <Item key="Today">Today</Item>
-            <Item key="Meals">Meals</Item>
             <Item key="Week">Week</Item>
+            <Item key="Meals">Meals</Item>
             <Item key="Settings">Settings</Item>
           </TabList>
           <TabPanels>
             <Item key="Today">
               <Today />
             </Item>
-            <Item key="Meals">
-              <Meals />
-            </Item>
             <Item key="Week">
               <Week />
+            </Item>
+            <Item key="Meals">
+              <Meals />
             </Item>
             <Item key="Settings">
               <Settings />
