@@ -26,14 +26,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Provider theme={defaultTheme}>
-      <Flex
-        direction="column"
-        minHeight="100vh"
-        maxWidth="56.25vh"
-        marginX="auto"
-      >
-        <Tabs aria-label="Diet App">
+    <Provider theme={defaultTheme} height="100%">
+      <Flex direction="column" height="100%" maxWidth="56.25vh" marginX="auto">
+        <Tabs aria-label="Diet App" height="100%">
           <TabList>
             <Item key="Today">Today</Item>
             <Item key="Weeks">Weeks</Item>

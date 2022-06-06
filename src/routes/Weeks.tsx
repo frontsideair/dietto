@@ -1,15 +1,30 @@
-import { useState } from "react";
-import { ActionButton, Button, Flex, View } from "@adobe/react-spectrum";
+import { useState, useRef } from "react";
+import {
+  ActionButton,
+  Button,
+  Flex,
+  Heading,
+  View,
+} from "@adobe/react-spectrum";
+import { FixedSizeList } from "react-window";
 import {
   eachDayOfInterval,
   endOfWeek,
   isToday,
   startOfToday,
   startOfWeek,
+  subWeeks,
 } from "date-fns";
+import { useRect } from "@reach/rect";
+import { head, last } from "ramda";
 import { useLogs } from "../utils/database";
 import { logsCalories } from "../utils/model";
-import { formatDate, formatDateHumanReadable, get } from "../utils";
+import {
+  formatDate,
+  formatDateHumanReadable,
+  formatDateShort,
+  get,
+} from "../utils";
 import List from "../components/List";
 import Day from "../components/Day";
 
@@ -25,12 +40,15 @@ function Calories(props: { children: number }) {
   return <View>{calories}</View>;
 }
 
-export default function Weeks() {
-  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [logs] = useLogs();
+type Props = {
+  day: Date;
+  setSelectedDay: (day: Date) => void;
+  style: React.CSSProperties;
+};
 
-  const today = startOfToday();
-  const week = getWeek(today);
+function Week({ day, setSelectedDay, style }: Props) {
+  const [logs] = useLogs();
+  const week = getWeek(day);
   const data = week.map((day) => ({
     day,
     calories: logsCalories([...get(logs, formatDate(day), new Map()).values()]),
@@ -42,7 +60,43 @@ export default function Weeks() {
   );
 
   return (
-    <Flex direction="column">
+    <div style={style}>
+      <Heading>{`${formatDateShort(head(week)!)} to ${formatDateShort(
+        last(week)!
+      )} week`}</Heading>
+      <List items={data}>
+        {(item) => (
+          <ActionButton
+            key={item.day.toString()}
+            isQuiet
+            onPress={() => setSelectedDay(item.day)}
+          >
+            <Flex justifyContent="space-between" flexGrow={1}>
+              <View>
+                {formatDateHumanReadable(item.day)}{" "}
+                {isToday(item.day) ? "(Today)" : ""}
+              </View>{" "}
+              <Calories>{item.calories}</Calories>
+            </Flex>
+          </ActionButton>
+        )}
+      </List>
+      <View>
+        Weekly average:{" "}
+        {Number.isFinite(average) ? `${average} kcal` : "no data"}
+      </View>
+    </div>
+  );
+}
+
+export default function Weeks() {
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const today = startOfToday();
+  const ref = useRef<HTMLDivElement>(null);
+  const rect = useRect(ref);
+
+  return (
+    <div style={{ height: "100%" }} ref={ref}>
       {selectedDay ? (
         <>
           <Button variant="cta" onPress={() => setSelectedDay(null)}>
@@ -51,29 +105,23 @@ export default function Weeks() {
           <Day date={selectedDay} />
         </>
       ) : (
-        <>
-          <List items={data}>
-            {(item) => (
-              <ActionButton
-                key={item.day.toString()}
-                isQuiet
-                onPress={() => setSelectedDay(item.day)}
-              >
-                <Flex justifyContent="space-between" flexGrow={1}>
-                  <View>
-                    {formatDateHumanReadable(item.day)}{" "}
-                    {isToday(item.day) ? "(Today)" : ""}
-                  </View>{" "}
-                  <Calories>{item.calories}</Calories>
-                </Flex>
-              </ActionButton>
+        rect && (
+          <FixedSizeList
+            width={rect.width}
+            height={rect.height}
+            itemSize={370}
+            itemCount={52}
+          >
+            {({ index, style }) => (
+              <Week
+                style={style}
+                day={subWeeks(today, index)}
+                setSelectedDay={setSelectedDay}
+              />
             )}
-          </List>
-          <View>
-            Weekly average: {Number.isFinite(average) ? average : "no data"}
-          </View>
-        </>
+          </FixedSizeList>
+        )
       )}
-    </Flex>
+    </div>
   );
 }
