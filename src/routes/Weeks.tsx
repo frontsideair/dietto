@@ -1,11 +1,5 @@
 import { useState, useRef } from "react";
-import {
-  ActionButton,
-  Button,
-  Flex,
-  Heading,
-  View,
-} from "@adobe/react-spectrum";
+import { Button, Flex, Heading, View } from "@adobe/react-spectrum";
 import { FixedSizeList } from "react-window";
 import {
   eachDayOfInterval,
@@ -66,10 +60,10 @@ function Week({ day, setSelectedDay, style }: Props) {
       )} week`}</Heading>
       <List items={data}>
         {(item) => (
-          <ActionButton
+          <div
             key={item.day.toString()}
-            isQuiet
-            onPress={() => setSelectedDay(item.day)}
+            onClick={() => setSelectedDay(item.day)}
+            style={{ padding: "6px 0px" }}
           >
             <Flex justifyContent="space-between" flexGrow={1}>
               <View>
@@ -78,7 +72,7 @@ function Week({ day, setSelectedDay, style }: Props) {
               </View>{" "}
               <Calories>{item.calories}</Calories>
             </Flex>
-          </ActionButton>
+          </div>
         )}
       </List>
       <View>
