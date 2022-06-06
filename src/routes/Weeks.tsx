@@ -25,7 +25,7 @@ function Calories(props: { children: number }) {
   return <View>{calories}</View>;
 }
 
-export default function Week() {
+export default function Weeks() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [logs] = useLogs();
 
