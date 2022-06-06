@@ -25,7 +25,7 @@ function Calories(props: { children: number }) {
   return <View>{calories}</View>;
 }
 
-export default function Days() {
+export default function Week() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [logs] = useLogs();
 
@@ -69,7 +69,9 @@ export default function Days() {
               </ActionButton>
             )}
           </List>
-          <View>Weekly average: {average}</View>
+          <View>
+            Weekly average: {Number.isFinite(average) ? average : "no data"}
+          </View>
         </>
       )}
     </Flex>
