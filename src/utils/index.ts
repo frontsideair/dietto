@@ -18,6 +18,10 @@ export function formatDateHumanReadable(date: Date): string {
   return format(date, "MM/dd, EEEE");
 }
 
+export function formatDateShort(date: Date): string {
+  return format(date, "MM/dd");
+}
+
 export function formatDate(date: Date): DateString {
   return formatISO(date, { representation: "date" }) as DateString;
 }

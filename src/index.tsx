@@ -13,7 +13,7 @@ import { enableMapSet } from "immer";
 
 import "./index.css";
 
-import Week from "./routes/Week";
+import Weeks from "./routes/Weeks";
 import Today from "./routes/Today";
 import Meals from "./routes/Meals";
 import Settings from "./routes/Settings";
@@ -26,17 +26,12 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Provider theme={defaultTheme}>
-      <Flex
-        direction="column"
-        minHeight="100vh"
-        maxWidth="56.25vh"
-        marginX="auto"
-      >
-        <Tabs aria-label="Diet App">
+    <Provider theme={defaultTheme} height="100%">
+      <Flex direction="column" height="100%" maxWidth="56.25vh" marginX="auto">
+        <Tabs aria-label="Diet App" height="100%">
           <TabList>
             <Item key="Today">Today</Item>
-            <Item key="Week">Week</Item>
+            <Item key="Weeks">Weeks</Item>
             <Item key="Meals">Meals</Item>
             <Item key="Settings">Settings</Item>
           </TabList>
@@ -44,8 +39,8 @@ root.render(
             <Item key="Today">
               <Today />
             </Item>
-            <Item key="Week">
-              <Week />
+            <Item key="Weeks">
+              <Weeks />
             </Item>
             <Item key="Meals">
               <Meals />
