@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@adobe/react-spectrum': ^3.18.0
   '@nivo/core': ^0.67.0
-  '@nivo/line': ^0.67.0
   '@nivo/pie': ^0.67.0
   '@reach/rect': ^0.17.0
   '@spectrum-icons/illustrations': ^3.3.0
@@ -33,7 +32,6 @@ specifiers:
 dependencies:
   '@adobe/react-spectrum': 3.18.0_ef5jwxihqo6n7gxfmzogljlgcm
   '@nivo/core': 0.67.0_ef5jwxihqo6n7gxfmzogljlgcm
-  '@nivo/line': 0.67.0_ycht3bn6jd2tl47ksfot665nly
   '@nivo/pie': 0.67.0_ycht3bn6jd2tl47ksfot665nly
   '@reach/rect': 0.17.0_ef5jwxihqo6n7gxfmzogljlgcm
   '@spectrum-icons/illustrations': 3.3.0_react@18.1.0
@@ -1620,54 +1618,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.13
     dev: true
 
-  /@nivo/annotations/0.67.0_ycht3bn6jd2tl47ksfot665nly:
-    resolution: {integrity: sha512-Qfracwd9we2nWBaNOAp0Lnt9uc86yRFDcQI3jsOdjFdzDA4lRwhkD85Lq477w1XrU7mtpjeRGsaKTCJtaorWEg==}
-    peerDependencies:
-      '@nivo/core': 0.67.0
-      prop-types: '>= 15.5.10 < 16.0.0'
-      react: '>= 16.8.4 < 18.0.0'
-    dependencies:
-      '@nivo/colors': 0.67.0_phsy7oky3w4xzjdxzq7vsdinxy
-      '@nivo/core': 0.67.0_ef5jwxihqo6n7gxfmzogljlgcm
-      lodash: 4.17.21
-      react: 18.1.0
-      react-spring: 9.0.0-rc.3_ef5jwxihqo6n7gxfmzogljlgcm
-    transitivePeerDependencies:
-      - konva
-      - react-dom
-      - react-konva
-      - react-native
-      - react-three-fiber
-      - react-zdog
-      - three
-      - zdog
-    dev: false
-
-  /@nivo/axes/0.67.0_ycht3bn6jd2tl47ksfot665nly:
-    resolution: {integrity: sha512-csqEgFoJQGoB5/TDSy7SXCy/2QSdrfSa51AMU/RhzpnZ35wNO/zHkEfP+ApvB8nuuwVuBNOShio80PNZOOD+Og==}
-    peerDependencies:
-      '@nivo/core': 0.67.0
-      prop-types: '>= 15.5.10 < 16.0.0'
-      react: '>= 16.8.4 < 18.0.0'
-    dependencies:
-      '@nivo/core': 0.67.0_ef5jwxihqo6n7gxfmzogljlgcm
-      '@nivo/scales': 0.67.0
-      d3-format: 1.4.5
-      d3-time: 1.1.0
-      d3-time-format: 2.3.0
-      react: 18.1.0
-      react-spring: 9.0.0-rc.3_ef5jwxihqo6n7gxfmzogljlgcm
-    transitivePeerDependencies:
-      - konva
-      - react-dom
-      - react-konva
-      - react-native
-      - react-three-fiber
-      - react-zdog
-      - three
-      - zdog
-    dev: false
-
   /@nivo/colors/0.67.0_phsy7oky3w4xzjdxzq7vsdinxy:
     resolution: {integrity: sha512-y8x76SzQ4HYm6kkWYfBGQSE5fy/jtqGhCBjivlKsouU9Hv2G8g4a2JVMsfadJQHQIUjIsM/7Q0Y7zasFM9wkgA==}
     peerDependencies:
@@ -1728,35 +1678,6 @@ packages:
       recompose: 0.30.0_react@18.1.0
     dev: false
 
-  /@nivo/line/0.67.0_ycht3bn6jd2tl47ksfot665nly:
-    resolution: {integrity: sha512-+iZpvVekl6GXZl+GnqL5kvtIhNl05tkcCJ6ajheVmOuzaFV7J9xBk8E3bFqNtFDM+vt4b0ggujW8zrlrZvrwUg==}
-    peerDependencies:
-      '@nivo/core': 0.67.0
-      prop-types: '>= 15.5.10 < 16.0.0'
-      react: '>= 16.8.4 < 18.0.0'
-    dependencies:
-      '@nivo/annotations': 0.67.0_ycht3bn6jd2tl47ksfot665nly
-      '@nivo/axes': 0.67.0_ycht3bn6jd2tl47ksfot665nly
-      '@nivo/colors': 0.67.0_phsy7oky3w4xzjdxzq7vsdinxy
-      '@nivo/core': 0.67.0_ef5jwxihqo6n7gxfmzogljlgcm
-      '@nivo/legends': 0.67.0_phsy7oky3w4xzjdxzq7vsdinxy
-      '@nivo/scales': 0.67.0
-      '@nivo/tooltip': 0.67.0_ycht3bn6jd2tl47ksfot665nly
-      '@nivo/voronoi': 0.67.0_phsy7oky3w4xzjdxzq7vsdinxy
-      d3-shape: 1.3.7
-      react: 18.1.0
-      react-spring: 9.0.0-rc.3_ef5jwxihqo6n7gxfmzogljlgcm
-    transitivePeerDependencies:
-      - konva
-      - react-dom
-      - react-konva
-      - react-native
-      - react-three-fiber
-      - react-zdog
-      - three
-      - zdog
-    dev: false
-
   /@nivo/pie/0.67.0_ycht3bn6jd2tl47ksfot665nly:
     resolution: {integrity: sha512-TYxwvX5xCPQ+vUOFAPjhvwWw++/HXdRzCm08RHCAWtH5iNPwMoALPh2cSawqcVFwxNPnh0xv/nLTKkZIq2N2dw==}
     peerDependencies:
@@ -1782,16 +1703,6 @@ packages:
       - zdog
     dev: false
 
-  /@nivo/scales/0.67.0:
-    resolution: {integrity: sha512-hXDeh3GzjZA3CcvJp14vCp0/QeoYMxVC2dZl55rIJdW200M+ET/ZtJQA2W1mDOGQUxR9z1flFvGJA+EqXhThwQ==}
-    peerDependencies:
-      prop-types: '>= 15.5.10 < 16.0.0'
-    dependencies:
-      d3-scale: 3.2.3
-      d3-time-format: 2.3.0
-      lodash: 4.17.21
-    dev: false
-
   /@nivo/tooltip/0.67.0_ycht3bn6jd2tl47ksfot665nly:
     resolution: {integrity: sha512-Z4h4Ks/fFd7Cl2uSG/trfSYLXaiQNyFX2wGJrE/UPzDSpf4XqaW8uEBaK3p46200WG2AgltG0fHrouGNyMJ+1g==}
     peerDependencies:
@@ -1809,20 +1720,6 @@ packages:
       - react-zdog
       - three
       - zdog
-    dev: false
-
-  /@nivo/voronoi/0.67.0_phsy7oky3w4xzjdxzq7vsdinxy:
-    resolution: {integrity: sha512-Z+e+fa92xWIhbpSRdQGJtei3bBHTbLnsmXtfje+Xz8LYpkyxp8R/iTs9cqzQ4KILp1Tv6EnQYWrFWNizN3fNGA==}
-    peerDependencies:
-      '@nivo/core': 0.67.0
-      prop-types: '>= 15.5.10 < 16.0.0'
-      react: '>= 16.8.4 < 18.0.0'
-    dependencies:
-      '@nivo/core': 0.67.0_ef5jwxihqo6n7gxfmzogljlgcm
-      d3-delaunay: 5.3.0
-      d3-scale: 3.2.3
-      react: 18.1.0
-      recompose: 0.30.0_react@18.1.0
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -4658,12 +4555,6 @@ packages:
     resolution: {integrity: sha512-SPXi0TSKPD4g9tw0NMZFnR95XVgUZiBH+uUTqQuDu1OsE2zomHU7ho0FISciaPvosimixwHFl3WHLGabv6dDgQ==}
     dev: false
 
-  /d3-delaunay/5.3.0:
-    resolution: {integrity: sha512-amALSrOllWVLaHTnDLHwMIiz0d1bBu9gZXd1FiLfXf8sHcX9jrcj81TVZOqD4UX7MgBZZ07c8GxzEgBpJqc74w==}
-    dependencies:
-      delaunator: 4.0.1
-    dev: false
-
   /d3-format/1.4.5:
     resolution: {integrity: sha512-J0piedu6Z8iB6TbIGfZgDzfXxUFN3qQRMofy2oPdXzQibYGqPB/9iMcxr/TGalU+2RsyDO+U4f33id8tbnSRMQ==}
     dev: false
@@ -4783,10 +4674,6 @@ packages:
       has-property-descriptors: 1.0.0
       object-keys: 1.1.1
     dev: true
-
-  /delaunator/4.0.1:
-    resolution: {integrity: sha512-WNPWi1IRKZfCt/qIDMfERkDp93+iZEmOxN2yy4Jg+Xhv8SLk2UTqqbe1sfiipn0and9QrE914/ihdx82Y/Giag==}
-    dev: false
 
   /dir-glob/3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
