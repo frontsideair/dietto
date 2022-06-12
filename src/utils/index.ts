@@ -1,12 +1,12 @@
-import { format, formatISO, parseISO } from "date-fns";
-import { DateString, DateTimeString } from "./model";
+import { endOfWeek, format, formatISO, parseISO, startOfWeek } from "date-fns";
+import { DateString, DateTimeString, WeekString } from "./model";
 
 export function get<K, V>(map: Map<K, V>, key: K, defaultValue?: V): V {
   const value = map.get(key);
   if (value !== undefined) {
     return value;
   } else {
-    if (defaultValue) {
+    if (defaultValue !== undefined) {
       return defaultValue;
     } else {
       throw new Error(`Key ${key} not found in map!`);
@@ -24,6 +24,12 @@ export function formatDateShort(date: Date): string {
 
 export function formatDate(date: Date): DateString {
   return formatISO(date, { representation: "date" }) as DateString;
+}
+
+export function formatWeek(date: Date): WeekString {
+  const start = startOfWeek(date, { weekStartsOn: 1 });
+  const end = endOfWeek(date, { weekStartsOn: 1 });
+  return `${formatDateShort(start)} - ${formatDateShort(end)}` as WeekString;
 }
 
 export function formatDateTime(date: Date): DateTimeString {

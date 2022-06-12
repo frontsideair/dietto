@@ -4,6 +4,7 @@ type Opaque<K, T> = T & { __TYPE__: K };
 
 export type DateTimeString = Opaque<"DateTimeString", string>;
 export type DateString = Opaque<"DateString", string>;
+export type WeekString = Opaque<"WeekString", string>;
 export type UUID = Opaque<"UUID", string>;
 
 export type Calories = Opaque<"Calories", number>;

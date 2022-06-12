@@ -1,7 +1,15 @@
 import { useState } from "react";
 import produce from "immer";
 import superjson from "superjson";
-import { Calories, DateString, Log, Meal, uuid, UUID } from "./model";
+import {
+  Calories,
+  DateString,
+  Log,
+  Meal,
+  uuid,
+  UUID,
+  WeekString,
+} from "./model";
 import { formatDate, get } from ".";
 
 function useLocalStorage<T>(
@@ -24,6 +32,29 @@ function useLocalStorage<T>(
 
 export function useLimit() {
   return useLocalStorage("limit", 1000, (n) => Number.parseInt(n, 10), String);
+}
+
+type WeeklyWeight = Map<WeekString, number>;
+
+export function useWeeklyWeight(week: WeekString) {
+  const [weeklyWeight, setWeeklyWeight] = useLocalStorage<WeeklyWeight>(
+    "weeklyWeight",
+    new Map(),
+    superjson.parse,
+    superjson.stringify
+  );
+
+  const weight = get(weeklyWeight, week, null);
+
+  function logWeight(weight: number) {
+    setWeeklyWeight((weeklyWeight) =>
+      produce(weeklyWeight, (draft) => {
+        draft.set(week, weight);
+      })
+    );
+  }
+
+  return [weight, logWeight] as const;
 }
 
 type Logs = Map<DateString, Map<UUID, Log>>;

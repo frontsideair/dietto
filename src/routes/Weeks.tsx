@@ -1,5 +1,18 @@
-import { useState, useRef } from "react";
-import { Button, Flex, Heading, View } from "@adobe/react-spectrum";
+import { useState, useRef, FormEvent } from "react";
+import {
+  Button,
+  Flex,
+  Heading,
+  View,
+  Text,
+  DialogTrigger,
+  ActionButton,
+  Dialog,
+  Divider,
+  Content,
+  Form,
+  TextField,
+} from "@adobe/react-spectrum";
 import { FixedSizeList } from "react-window";
 import {
   eachDayOfInterval,
@@ -10,15 +23,9 @@ import {
   subWeeks,
 } from "date-fns";
 import { useRect } from "@reach/rect";
-import { head, last } from "ramda";
-import { useLogs } from "../utils/database";
+import { useLogs, useWeeklyWeight } from "../utils/database";
 import { logsCalories } from "../utils/model";
-import {
-  formatDate,
-  formatDateHumanReadable,
-  formatDateShort,
-  get,
-} from "../utils";
+import { formatDate, formatDateHumanReadable, formatWeek, get } from "../utils";
 import List from "../components/List";
 import Day from "../components/Day";
 
@@ -52,12 +59,12 @@ function Week({ day, setSelectedDay, style }: Props) {
     daysWithData.reduce((acc, { calories }) => acc + calories, 0) /
       daysWithData.length
   );
+  const weekString = formatWeek(day);
+  const [weight, logWeight] = useWeeklyWeight(weekString);
 
   return (
     <div style={style}>
-      <Heading>{`${formatDateShort(head(week)!)} to ${formatDateShort(
-        last(week)!
-      )} week`}</Heading>
+      <Heading>{`${weekString} week`}</Heading>
       <List items={data}>
         {(item) => (
           <div
@@ -75,10 +82,45 @@ function Week({ day, setSelectedDay, style }: Props) {
           </div>
         )}
       </List>
-      <View>
-        Weekly average:{" "}
-        {Number.isFinite(average) ? `${average} kcal` : "no data"}
-      </View>
+      <Flex direction="column">
+        <Text>
+          Weekly average:{" "}
+          {Number.isFinite(average) ? `${average} kcal` : "no data"}
+        </Text>
+
+        <Text>Weight: {weight === null ? "not logged" : `${weight} kg`}</Text>
+
+        <DialogTrigger type="tray">
+          <ActionButton>Log weight</ActionButton>
+          {(close) => (
+            <Dialog>
+              <Heading>Log weight</Heading>
+              <Divider />
+              <Content>
+                <Form
+                  onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                    event.preventDefault();
+                    const weight = event.currentTarget.weight.value;
+                    logWeight(weight);
+                    close();
+                  }}
+                >
+                  <TextField
+                    inputMode="decimal"
+                    name="weight"
+                    label="Weight"
+                    isRequired
+                    defaultValue={weight === null ? "" : String(weight)}
+                  />
+                  <Button variant="cta" type="submit">
+                    Log
+                  </Button>
+                </Form>
+              </Content>
+            </Dialog>
+          )}
+        </DialogTrigger>
+      </Flex>
     </div>
   );
 }
@@ -103,7 +145,7 @@ export default function Weeks() {
           <FixedSizeList
             width={rect.width}
             height={rect.height}
-            itemSize={370}
+            itemSize={440}
             itemCount={52}
           >
             {({ index, style }) => (
