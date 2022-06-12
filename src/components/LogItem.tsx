@@ -1,4 +1,3 @@
-import React from "react";
 import { Flex, Text } from "@adobe/react-spectrum";
 import { logCalories, Log } from "../utils/model";
 
