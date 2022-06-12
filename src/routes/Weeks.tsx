@@ -94,7 +94,7 @@ function Week({ day, setSelectedDay, style }: Props) {
           <ActionButton>Log weight</ActionButton>
           {(close) => (
             <Dialog>
-              <Heading>Delete log</Heading>
+              <Heading>Log weight</Heading>
               <Divider />
               <Content>
                 <Form
@@ -145,7 +145,7 @@ export default function Weeks() {
           <FixedSizeList
             width={rect.width}
             height={rect.height}
-            itemSize={400}
+            itemSize={440}
             itemCount={52}
           >
             {({ index, style }) => (
